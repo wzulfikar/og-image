@@ -102,7 +102,7 @@ function getCss(theme: string, fontSize: string) {
         line-height: 1.8;
     }
     .heading.no-image {
-        margin-top: -200px;
+        margin-top: -150px;
     }`;
 }
 
