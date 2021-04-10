@@ -16,11 +16,19 @@ function getCss(theme: string, fontSize: string) {
     let foreground = 'black';
     let radial = 'lightgray';
 
-    if (theme === 'dark') {
-        background = 'black';
-        foreground = 'white';
-        radial = 'dimgray';
+    switch (theme) {
+        case 'dark':
+            background = 'black';
+            foreground = 'white';
+            radial = 'dimgray';
+            break;
+        case 'dimmed':
+            background = '#1e2228';
+            foreground = 'white';
+            radial = 'dimgray';
+            break;
     }
+
     return `
     @font-face {
         font-family: 'Inter';

@@ -5,10 +5,18 @@ import { ParsedRequest, Theme } from './types';
 // Determine if user wants no image
 const NO_IMAGE = 'NO_IMAGE'
 
+const THEMES: {[key: string]: ParsedRequest["theme"]} = {
+    light: 'light',
+    dark: 'dark',
+    dimmed: 'dimmed',
+}
+
+const DEFAULT_THEME: ParsedRequest["theme"] = 'light'
+
 export function parseRequest(req: IncomingMessage) {
     console.log('HTTP ' + req.url);
     const { pathname, query } = parse(req.url || '/', true);
-    const { fontSize, images, widths, heights, theme, md } = (query || {});
+    const { fontSize, images, widths, heights, theme = DEFAULT_THEME, md } = (query || {});
 
     if (Array.isArray(fontSize)) {
         throw new Error('Expected a single fontSize');
@@ -32,7 +40,7 @@ export function parseRequest(req: IncomingMessage) {
     const parsedRequest: ParsedRequest = {
         fileType: extension === 'jpeg' ? extension : 'png',
         text: decodeURIComponent(text),
-        theme: theme === 'dark' ? 'dark' : 'light',
+        theme: THEMES[theme] || DEFAULT_THEME, // Fallback to default theme if theme is invalid
         md: md === '1' || md === 'true',
         fontSize: fontSize || '96px',
         images: getArray(images),
