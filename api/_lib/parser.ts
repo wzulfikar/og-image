@@ -9,6 +9,7 @@ const THEMES: {[key: string]: ParsedRequest["theme"]} = {
     light: 'light',
     dark: 'dark',
     dimmed: 'dimmed',
+    custom: 'custom',
 }
 
 const DEFAULT_THEME: ParsedRequest["theme"] = 'light'
@@ -16,7 +17,7 @@ const DEFAULT_THEME: ParsedRequest["theme"] = 'light'
 export function parseRequest(req: IncomingMessage) {
     console.log('HTTP ' + req.url);
     const { pathname, query } = parse(req.url || '/', true);
-    const { fontSize, images, widths, heights, theme = DEFAULT_THEME, md } = (query || {});
+    const { fontSize, images, widths, heights, theme = DEFAULT_THEME, md, customBackground, customForeground, customRadial } = (query || {});
 
     if (Array.isArray(fontSize)) {
         throw new Error('Expected a single fontSize');
@@ -46,6 +47,9 @@ export function parseRequest(req: IncomingMessage) {
         images: getArray(images),
         widths: getArray(widths),
         heights: getArray(heights),
+        customBackground: customBackground as string | undefined,
+        customForeground: customForeground as string | undefined,
+        customRadial: customRadial as string | undefined,
     };
     parsedRequest.images = getDefaultImages(parsedRequest.images, parsedRequest.theme);
 

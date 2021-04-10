@@ -86,14 +86,16 @@ const Button = ({ label, onclick }: ButtonProps) => {
 interface FieldProps {
     label: string;
     input: any;
+    style?: object;
+    extendClass?: string;
 }
 
-const Field = ({ label, input }: FieldProps) => {
+const Field = ({ label, input, extendClass = '', style = {} }: FieldProps) => {
     return H('div',
-        { className: 'field' },
+        { className: `field ${extendClass}`, style },
         H('label', 
             H('div', {className: 'field-label'}, label),
-            H('div', { className: 'field-value' }, input),
+            H('div', {className: 'field-value'}, input),
         ),
     );
 }
@@ -124,6 +126,7 @@ const themeOptions: DropdownOption[] = [
     { text: 'Light', value: 'light' },
     { text: 'Dark', value: 'dark' },
     { text: 'Dimmed', value: 'dimmed' },
+    { text: 'Custom', value: 'custom' },
 ];
 
 const fileTypeOptions: DropdownOption[] = [
@@ -188,6 +191,9 @@ interface AppState extends ParsedRequest {
     heights: string[];
     hideFirstImage: boolean;
     overrideUrl: URL | null;
+    customBackground?: string;
+    customForeground?: string;
+    customRadial?: string;
 }
 
 type SetState = (state: Partial<AppState>) => void;
@@ -218,6 +224,9 @@ const App = (_: any, state: AppState, setState: SetState) => {
         loading = true,
         selectedImageIndex = 0,
         overrideUrl = null,
+        customBackground = '#000',
+        customForeground = '#fff',
+        customRadial = 'dimgray',
     } = state;
     const mdValue = md ? '1' : '0';
     const imageOptions = theme === 'light' ? imageLightOptions : imageDarkOptions;
@@ -226,6 +235,14 @@ const App = (_: any, state: AppState, setState: SetState) => {
     url.searchParams.append('theme', theme);
     url.searchParams.append('md', mdValue);
     url.searchParams.append('fontSize', fontSize);
+    
+    // Add custom theme properties
+    if (theme === 'custom') {
+        url.searchParams.append('customBackground', customBackground);
+        url.searchParams.append('customForeground', customForeground);
+        url.searchParams.append('customRadial', customRadial);
+    }
+
     for (let i = 0; i< images.length; i++) {
         if (state.hideFirstImage && i === 0) {
             continue;
@@ -255,6 +272,39 @@ const App = (_: any, state: AppState, setState: SetState) => {
                             let clone = [...images];
                             clone[0] = options[selectedImageIndex].value;
                             setLoadingState({ theme: val, images: clone });
+                        }
+                    })
+                }),
+                H(Field, {
+                    label: 'Custom Background',
+                    extendClass: 'field-custom',
+                    style: { display: state.theme === 'custom' ? 'block' : 'none', borderTopLeftRadius: '10px' },
+                    input: H(TextInput, {
+                        value: customBackground,
+                        oninput: (val: string) => {
+                            setLoadingState({ customBackground: val });
+                        }
+                    })
+                }),
+                H(Field, {
+                    label: 'Custom Foreground',
+                    extendClass: 'field-custom',
+                    style: { display: state.theme === 'custom' ? 'block' : 'none' },
+                    input: H(TextInput, {
+                        value: customForeground,
+                        oninput: (val: string) => {
+                            setLoadingState({ customForeground: val });
+                        }
+                    })
+                }),
+                H(Field, {
+                    label: 'Custom Radial',
+                    extendClass: 'field-custom',
+                    style: { display: state.theme === 'custom' ? 'block' : 'none', borderBottomLeftRadius: '10px' },
+                    input: H(TextInput, {
+                        value: customRadial,
+                        oninput: (val: string) => {
+                            setLoadingState({ customRadial: val });
                         }
                     })
                 }),

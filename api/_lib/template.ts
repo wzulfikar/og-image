@@ -11,7 +11,7 @@ const rglr = readFileSync(`${__dirname}/../_fonts/Inter-Regular.woff2`).toString
 const bold = readFileSync(`${__dirname}/../_fonts/Inter-Bold.woff2`).toString('base64');
 const mono = readFileSync(`${__dirname}/../_fonts/Vera-Mono.woff2`).toString('base64');
 
-function getCss(theme: string, fontSize: string) {
+function getCss(theme: string, fontSize: string, customBackground?: string, customForeground?: string, customRadial?: string) {
     let background = 'white';
     let foreground = 'black';
     let radial = 'lightgray';
@@ -26,6 +26,11 @@ function getCss(theme: string, fontSize: string) {
             background = '#1e2228';
             foreground = 'white';
             radial = 'dimgray';
+            break;
+        case 'custom':
+            background = customBackground as string;
+            foreground = customForeground as string;
+            radial = customRadial as string;
             break;
     }
 
@@ -115,14 +120,14 @@ function getCss(theme: string, fontSize: string) {
 }
 
 export function getHtml(parsedReq: ParsedRequest) {
-    const { text, theme, md, fontSize, images, widths, heights } = parsedReq;
+    const { text, theme, md, fontSize, images, widths, heights, customBackground, customForeground, customRadial } = parsedReq;
     return `<!DOCTYPE html>
 <html>
     <meta charset="utf-8">
     <title>Generated Image</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <style>
-        ${getCss(theme, fontSize)}
+        ${getCss(theme, fontSize, customBackground, customForeground, customRadial)}
     </style>
     <body>
         <div>

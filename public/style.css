@@ -101,6 +101,7 @@ button:hover {
     transition: border 0.2s ease,color 0.2s ease;
     vertical-align: middle;
     width: 100%;
+    background: white;
 }
 
 .input-outer-wrapper:hover {
@@ -296,6 +297,14 @@ img {
     border-color: #ddd;
 }
 
+@media (min-width: 1000px) {    
+    .field.field-custom {
+        font-size: 0.8rem;
+        background: whitesmoke;
+        color: #424242;
+        font-weight: 500;
+    }
+}
 
 @media (max-width: 1000px) {
     .field {
