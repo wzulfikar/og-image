@@ -1,5 +1,5 @@
 import { ParsedRequest, Theme, FileType } from '../api/_lib/types';
-const { H, R, copee } = (window as any);
+const { H, R, copee } = window as any;
 let timeout = -1;
 
 interface ImagePreviewProps {
@@ -10,19 +10,24 @@ interface ImagePreviewProps {
     loading: boolean;
 }
 
-const ImagePreview = ({ src, onclick, onload, onerror, loading }: ImagePreviewProps) => {
+const ImagePreview = ({
+    src,
+    onclick,
+    onload,
+    onerror,
+    loading,
+}: ImagePreviewProps) => {
     const style = {
         filter: loading ? 'blur(5px)' : '',
         opacity: loading ? 0.1 : 1,
     };
     const title = 'Click to copy image URL to clipboard';
-    return H('a',
+    return H(
+        'a',
         { className: 'image-wrapper', href: src, onclick },
-        H('img',
-            { src, onload, onerror, style, title }
-        )
+        H('img', { src, onload, onerror, style, title })
     );
-}
+};
 
 interface DropdownOption {
     text: string;
@@ -39,23 +44,23 @@ interface DropdownProps {
 const Dropdown = ({ options, value, onchange, small }: DropdownProps) => {
     const wrapper = small ? 'select-wrapper small' : 'select-wrapper';
     const arrow = small ? 'select-arrow small' : 'select-arrow';
-    return H('div',
+    return H(
+        'div',
         { className: wrapper },
-        H('select',
+        H(
+            'select',
             { onchange: (e: any) => onchange(e.target.value) },
-            options.map(o =>
-                H('option',
+            options.map((o) =>
+                H(
+                    'option',
                     { value: o.value, selected: value === o.value },
                     o.text
                 )
             )
         ),
-        H('div',
-            { className: arrow },
-            '▼'
-        )
+        H('div', { className: arrow }, '▼')
     );
-}
+};
 
 interface TextInputProps {
     value: string;
@@ -63,16 +68,20 @@ interface TextInputProps {
 }
 
 const TextInput = ({ value, oninput }: TextInputProps) => {
-    return H('div',
+    return H(
+        'div',
         { className: 'input-outer-wrapper' },
-        H('div',
+        H(
+            'div',
             { className: 'input-inner-wrapper' },
-            H('input',
-                { type: 'text', value, oninput: (e: any) => oninput(e.target.value) }
-            )
+            H('input', {
+                type: 'text',
+                value,
+                oninput: (e: any) => oninput(e.target.value),
+            })
         )
     );
-}
+};
 
 interface ButtonProps {
     label: string;
@@ -81,7 +90,7 @@ interface ButtonProps {
 
 const Button = ({ label, onclick }: ButtonProps) => {
     return H('button', { onclick }, label);
-}
+};
 
 interface FieldProps {
     label: string;
@@ -91,14 +100,16 @@ interface FieldProps {
 }
 
 const Field = ({ label, input, extendClass = '', style = {} }: FieldProps) => {
-    return H('div',
+    return H(
+        'div',
         { className: `field ${extendClass}`, style },
-        H('label', 
-            H('div', {className: 'field-label'}, label),
-            H('div', {className: 'field-value'}, input),
-        ),
+        H(
+            'label',
+            H('div', { className: 'field-label' }, label),
+            H('div', { className: 'field-value' }, input)
+        )
     );
-}
+};
 
 interface ToastProps {
     show: boolean;
@@ -106,21 +117,23 @@ interface ToastProps {
 }
 
 const Toast = ({ show, message }: ToastProps) => {
-    const style = { transform:  show ? 'translate3d(0,-0px,-0px) scale(1)' : '' };
-    return H('div',
+    const style = {
+        transform: show ? 'translate3d(0,-0px,-0px) scale(1)' : '',
+    };
+    return H(
+        'div',
         { className: 'toast-area' },
-        H('div',
+        H(
+            'div',
             { className: 'toast-outer', style },
-            H('div',
+            H(
+                'div',
                 { className: 'toast-inner' },
-                H('div',
-                    { className: 'toast-message'},
-                    message
-                )
+                H('div', { className: 'toast-message' }, message)
             )
-        ),
+        )
     );
-}
+};
 
 const themeOptions: DropdownOption[] = [
     { text: 'Light', value: 'light' },
@@ -134,11 +147,10 @@ const fileTypeOptions: DropdownOption[] = [
     { text: 'JPEG', value: 'jpeg' },
 ];
 
-const fontSizeOptions: DropdownOption[] = Array
-    .from({ length: 10 })
+const fontSizeOptions: DropdownOption[] = Array.from({ length: 10 })
     .map((_, i) => i * 25)
-    .filter(n => n > 0)
-    .map(n => ({ text: n + 'px', value: n + 'px' }));
+    .filter((n) => n > 0)
+    .map((n) => ({ text: n + 'px', value: n + 'px' }));
 
 const markdownOptions: DropdownOption[] = [
     { text: 'Plain Text', value: '0' },
@@ -146,17 +158,40 @@ const markdownOptions: DropdownOption[] = [
 ];
 
 const imageLightOptions: DropdownOption[] = [
-    { text: 'Vercel', value: 'https://assets.vercel.com/image/upload/front/assets/design/vercel-triangle-black.svg' },
-    { text: 'Next.js', value: 'https://assets.vercel.com/image/upload/front/assets/design/nextjs-black-logo.svg' },
-    { text: 'Hyper', value: 'https://assets.vercel.com/image/upload/front/assets/design/hyper-color-logo.svg' },
+    {
+        text: 'Vercel',
+        value:
+            'https://assets.vercel.com/image/upload/front/assets/design/vercel-triangle-black.svg',
+    },
+    {
+        text: 'Next.js',
+        value:
+            'https://assets.vercel.com/image/upload/front/assets/design/nextjs-black-logo.svg',
+    },
+    {
+        text: 'Hyper',
+        value:
+            'https://assets.vercel.com/image/upload/front/assets/design/hyper-color-logo.svg',
+    },
     { text: 'No image', value: 'NO_IMAGE' },
 ];
 
 const imageDarkOptions: DropdownOption[] = [
-
-    { text: 'Vercel', value: 'https://assets.vercel.com/image/upload/front/assets/design/vercel-triangle-white.svg' },
-    { text: 'Next.js', value: 'https://assets.vercel.com/image/upload/front/assets/design/nextjs-white-logo.svg' },
-    { text: 'Hyper', value: 'https://assets.vercel.com/image/upload/front/assets/design/hyper-bw-logo.svg' },
+    {
+        text: 'Vercel',
+        value:
+            'https://assets.vercel.com/image/upload/front/assets/design/vercel-triangle-white.svg',
+    },
+    {
+        text: 'Next.js',
+        value:
+            'https://assets.vercel.com/image/upload/front/assets/design/nextjs-white-logo.svg',
+    },
+    {
+        text: 'Hyper',
+        value:
+            'https://assets.vercel.com/image/upload/front/assets/design/hyper-bw-logo.svg',
+    },
     { text: 'No image', value: 'NO_IMAGE' },
 ];
 
@@ -205,7 +240,10 @@ const App = (_: any, state: AppState, setState: SetState) => {
             newState.overrideUrl = state.overrideUrl;
         }
         if (newState.overrideUrl) {
-            timeout = window.setTimeout(() => setState({ overrideUrl: null }), 200);
+            timeout = window.setTimeout(
+                () => setState({ overrideUrl: null }),
+                200
+            );
         }
 
         setState({ ...newState, loading: true });
@@ -216,9 +254,9 @@ const App = (_: any, state: AppState, setState: SetState) => {
         theme = 'light',
         md = true,
         text = '**Hello** World',
-        images=[imageLightOptions[0].value],
-        widths=[],
-        heights=[],
+        images = [imageLightOptions[0].value],
+        widths = [],
+        heights = [],
         showToast = false,
         messageToast = '',
         loading = true,
@@ -229,13 +267,14 @@ const App = (_: any, state: AppState, setState: SetState) => {
         customRadial = 'dimgray',
     } = state;
     const mdValue = md ? '1' : '0';
-    const imageOptions = theme === 'light' ? imageLightOptions : imageDarkOptions;
+    const imageOptions =
+        theme === 'light' ? imageLightOptions : imageDarkOptions;
     const url = new URL(window.location.origin);
     url.pathname = `${encodeURIComponent(text)}.${fileType}`;
     url.searchParams.append('theme', theme);
     url.searchParams.append('md', mdValue);
     url.searchParams.append('fontSize', fontSize);
-    
+
     // Add custom theme properties
     if (theme === 'custom') {
         url.searchParams.append('customBackground', customBackground);
@@ -243,7 +282,7 @@ const App = (_: any, state: AppState, setState: SetState) => {
         url.searchParams.append('customRadial', customRadial);
     }
 
-    for (let i = 0; i< images.length; i++) {
+    for (let i = 0; i < images.length; i++) {
         if (state.hideFirstImage && i === 0) {
             continue;
         }
@@ -257,80 +296,97 @@ const App = (_: any, state: AppState, setState: SetState) => {
         url.searchParams.append('heights', height);
     }
 
-    return H('div',
+    return H(
+        'div',
         { className: 'split' },
-        H('div',
+        H(
+            'div',
             { className: 'pull-left' },
-            H('div',
+            H(
+                'div',
                 H(Field, {
                     label: 'Theme',
                     input: H(Dropdown, {
                         options: themeOptions,
                         value: theme,
                         onchange: (val: Theme) => {
-                            const options = val === 'light' ? imageLightOptions : imageDarkOptions
+                            const options =
+                                val === 'light'
+                                    ? imageLightOptions
+                                    : imageDarkOptions;
                             let clone = [...images];
                             clone[0] = options[selectedImageIndex].value;
                             setLoadingState({ theme: val, images: clone });
-                        }
-                    })
+                        },
+                    }),
                 }),
                 H(Field, {
                     label: 'Custom Background',
                     extendClass: 'field-custom',
-                    style: { display: state.theme === 'custom' ? 'block' : 'none', borderTopLeftRadius: '10px' },
+                    style: {
+                        display: state.theme === 'custom' ? 'block' : 'none',
+                        borderTopLeftRadius: '10px',
+                    },
                     input: H(TextInput, {
                         value: customBackground,
                         oninput: (val: string) => {
                             setLoadingState({ customBackground: val });
-                        }
-                    })
+                        },
+                    }),
                 }),
                 H(Field, {
                     label: 'Custom Foreground',
                     extendClass: 'field-custom',
-                    style: { display: state.theme === 'custom' ? 'block' : 'none' },
+                    style: {
+                        display: state.theme === 'custom' ? 'block' : 'none',
+                    },
                     input: H(TextInput, {
                         value: customForeground,
                         oninput: (val: string) => {
                             setLoadingState({ customForeground: val });
-                        }
-                    })
+                        },
+                    }),
                 }),
                 H(Field, {
                     label: 'Custom Radial',
                     extendClass: 'field-custom',
-                    style: { display: state.theme === 'custom' ? 'block' : 'none', borderBottomLeftRadius: '10px' },
+                    style: {
+                        display: state.theme === 'custom' ? 'block' : 'none',
+                        borderBottomLeftRadius: '10px',
+                    },
                     input: H(TextInput, {
                         value: customRadial,
                         oninput: (val: string) => {
                             setLoadingState({ customRadial: val });
-                        }
-                    })
+                        },
+                    }),
                 }),
                 H(Field, {
                     label: 'File Type',
                     input: H(Dropdown, {
                         options: fileTypeOptions,
                         value: fileType,
-                        onchange: (val: FileType) => setLoadingState({ fileType: val })
-                    })
+                        onchange: (val: FileType) =>
+                            setLoadingState({ fileType: val }),
+                    }),
                 }),
                 H(Field, {
                     label: 'Font Size',
                     input: H(Dropdown, {
                         options: fontSizeOptions,
                         value: fontSize,
-                        onchange: (val: string) => setLoadingState({ fontSize: val })
-                    })
+                        onchange: (val: string) =>
+                            setLoadingState({ fontSize: val }),
+                    }),
                 }),
                 H(Field, {
                     label: 'Text Type',
                     input: H(Dropdown, {
                         options: markdownOptions,
                         value: mdValue,
-                        onchange: (val: string) => setLoadingState({ md: val === '1' })
-                    })
+                        onchange: (val: string) =>
+                            setLoadingState({ md: val === '1' }),
+                    }),
                 }),
                 H(Field, {
                     label: 'Text Input',
@@ -339,132 +395,162 @@ const App = (_: any, state: AppState, setState: SetState) => {
                         oninput: (val: string) => {
                             console.log('oninput ' + val);
                             setLoadingState({ text: val, overrideUrl: url });
-                        }
-                    })
+                        },
+                    }),
                 }),
                 H(Field, {
                     label: 'Image 1',
-                    input: H('div',
+                    input: H(
+                        'div',
                         H(Dropdown, {
                             options: imageOptions,
                             value: imageOptions[selectedImageIndex].value,
-                            onchange: (val: string) =>  {
+                            onchange: (val: string) => {
                                 let clone = [...images];
                                 clone[0] = val;
-                                const selected = imageOptions.map(o => o.value).indexOf(val);
-                                setLoadingState({ images: clone, selectedImageIndex: selected });
-                            }
+                                const selected = imageOptions
+                                    .map((o) => o.value)
+                                    .indexOf(val);
+                                setLoadingState({
+                                    images: clone,
+                                    selectedImageIndex: selected,
+                                });
+                            },
                         }),
-                        H('div',
+                        H(
+                            'div',
                             { className: 'field-flex' },
                             H(Dropdown, {
                                 options: widthOptions,
                                 value: widths[0],
                                 small: true,
-                                onchange: (val: string) =>  {
+                                onchange: (val: string) => {
                                     let clone = [...widths];
                                     clone[0] = val;
                                     setLoadingState({ widths: clone });
-                                }
+                                },
                             }),
                             H(Dropdown, {
                                 options: heightOptions,
                                 value: heights[0],
                                 small: true,
-                                onchange: (val: string) =>  {
+                                onchange: (val: string) => {
                                     let clone = [...heights];
                                     clone[0] = val;
                                     setLoadingState({ heights: clone });
-                                }
+                                },
                             })
                         )
                     ),
                 }),
-                ...images.slice(1).map((image, i) => H(Field, {
-                    label: `Image ${i + 2}`,
-                    input: H('div',
-                        H(TextInput, {
-                            value: image,
-                            oninput: (val: string) => {
-                                let clone = [...images];
-                                clone[i + 1] = val;
-                                setLoadingState({ images: clone, overrideUrl: url });
-                            }
-                        }),
-                        H('div',
-                            { className: 'field-flex' },
-                            H(Dropdown, {
-                                options: widthOptions,
-                                value: widths[i + 1],
-                                small: true,
-                                onchange: (val: string) =>  {
-                                    let clone = [...widths];
+                ...images.slice(1).map((image, i) =>
+                    H(Field, {
+                        label: `Image ${i + 2}`,
+                        input: H(
+                            'div',
+                            H(TextInput, {
+                                value: image,
+                                oninput: (val: string) => {
+                                    let clone = [...images];
                                     clone[i + 1] = val;
-                                    setLoadingState({ widths: clone });
-                                }
+                                    setLoadingState({
+                                        images: clone,
+                                        overrideUrl: url,
+                                    });
+                                },
                             }),
-                            H(Dropdown, {
-                                options: heightOptions,
-                                value: heights[i + 1],
-                                small: true,
-                                onchange: (val: string) =>  {
-                                    let clone = [...heights];
-                                    clone[i + 1] = val;
-                                    setLoadingState({ heights: clone });
-                                }
-                            })
+                            H(
+                                'div',
+                                { className: 'field-flex' },
+                                H(Dropdown, {
+                                    options: widthOptions,
+                                    value: widths[i + 1],
+                                    small: true,
+                                    onchange: (val: string) => {
+                                        let clone = [...widths];
+                                        clone[i + 1] = val;
+                                        setLoadingState({ widths: clone });
+                                    },
+                                }),
+                                H(Dropdown, {
+                                    options: heightOptions,
+                                    value: heights[i + 1],
+                                    small: true,
+                                    onchange: (val: string) => {
+                                        let clone = [...heights];
+                                        clone[i + 1] = val;
+                                        setLoadingState({ heights: clone });
+                                    },
+                                })
+                            ),
+                            H(
+                                'div',
+                                { className: 'field-flex' },
+                                H(Button, {
+                                    label: `Remove Image ${i + 2}`,
+                                    onclick: (e: MouseEvent) => {
+                                        e.preventDefault();
+                                        const filter = (arr: any[]) =>
+                                            [...arr].filter(
+                                                (_, n) => n !== i + 1
+                                            );
+                                        const imagesClone = filter(images);
+                                        const widthsClone = filter(widths);
+                                        const heightsClone = filter(heights);
+                                        setLoadingState({
+                                            images: imagesClone,
+                                            widths: widthsClone,
+                                            heights: heightsClone,
+                                        });
+                                    },
+                                })
+                            )
                         ),
-                        H('div',
-                            { className: 'field-flex' },
-                            H(Button, {
-                                label: `Remove Image ${i + 2}`,
-                                onclick: (e: MouseEvent) => {
-                                    e.preventDefault();
-                                    const filter = (arr: any[]) => [...arr].filter((_, n) => n !== i + 1);
-                                    const imagesClone = filter(images);
-                                    const widthsClone = filter(widths);
-                                    const heightsClone = filter(heights);
-                                    setLoadingState({ images: imagesClone, widths: widthsClone, heights: heightsClone });
-                                }
-                            })
-                        )
-                    )
-                })),
+                    })
+                ),
                 H(Field, {
                     label: `Image ${images.length + 1}`,
                     input: H(Button, {
                         label: `Add Image ${images.length + 1}`,
                         onclick: () => {
-                            const nextImage = images.length === 1
-                                ? 'https://cdn.jsdelivr.net/gh/remojansen/logo.ts@master/ts.svg'
-                                : '';
-                            setLoadingState({ images: [...images, nextImage] })
-                        }
+                            const nextImage =
+                                images.length === 1
+                                    ? 'https://cdn.jsdelivr.net/gh/remojansen/logo.ts@master/ts.svg'
+                                    : '';
+                            setLoadingState({ images: [...images, nextImage] });
+                        },
                     }),
-                }),
+                })
             )
         ),
-        H('div',
+        H(
+            'div',
             { className: 'pull-right' },
             H(ImagePreview, {
                 src: overrideUrl ? overrideUrl.href : url.href,
                 loading: loading,
                 onload: () => setState({ loading: false }),
                 onerror: () => {
-                    setState({ showToast: true, messageToast: 'Oops, an error occurred' });
+                    setState({
+                        showToast: true,
+                        messageToast: 'Oops, an error occurred',
+                    });
                     setTimeout(() => setState({ showToast: false }), 2000);
                 },
                 onclick: (e: Event) => {
                     e.preventDefault();
                     const success = copee.toClipboard(url.href);
                     if (success) {
-                        setState({ showToast: true, messageToast: 'Copied image URL to clipboard' });
+                        setState({
+                            showToast: true,
+                            messageToast: 'Copied image URL to clipboard',
+                        });
                         setTimeout(() => setState({ showToast: false }), 3000);
                     } else {
                         window.open(url.href, '_blank');
                     }
                     return false;
-                }
+                },
             })
         ),
         H(Toast, {

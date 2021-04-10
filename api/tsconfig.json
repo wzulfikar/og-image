@@ -16,7 +16,5 @@
         "preserveConstEnums": true,
         "esModuleInterop": true
     },
-    "include": [
-        "./"
-    ]
+    "include": ["./"]
 }

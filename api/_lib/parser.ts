@@ -3,21 +3,31 @@ import { parse } from 'url';
 import { ParsedRequest, Theme } from './types';
 
 // Determine if user wants no image
-const NO_IMAGE = 'NO_IMAGE'
+const NO_IMAGE = 'NO_IMAGE';
 
-const THEMES: {[key: string]: ParsedRequest["theme"]} = {
+const THEMES: { [key: string]: ParsedRequest['theme'] } = {
     light: 'light',
     dark: 'dark',
     dimmed: 'dimmed',
     custom: 'custom',
-}
+};
 
-const DEFAULT_THEME: ParsedRequest["theme"] = 'light'
+const DEFAULT_THEME: ParsedRequest['theme'] = 'light';
 
 export function parseRequest(req: IncomingMessage) {
     console.log('HTTP ' + req.url);
     const { pathname, query } = parse(req.url || '/', true);
-    const { fontSize, images, widths, heights, theme = DEFAULT_THEME, md, customBackground, customForeground, customRadial } = (query || {});
+    const {
+        fontSize,
+        images,
+        widths,
+        heights,
+        theme = DEFAULT_THEME,
+        md,
+        customBackground,
+        customForeground,
+        customRadial,
+    } = query || {};
 
     if (Array.isArray(fontSize)) {
         throw new Error('Expected a single fontSize');
@@ -25,7 +35,7 @@ export function parseRequest(req: IncomingMessage) {
     if (Array.isArray(theme)) {
         throw new Error('Expected a single theme');
     }
-    
+
     const arr = (pathname || '/').slice(1).split('.');
     let extension = '';
     let text = '';
@@ -51,7 +61,10 @@ export function parseRequest(req: IncomingMessage) {
         customForeground: customForeground as string | undefined,
         customRadial: customRadial as string | undefined,
     };
-    parsedRequest.images = getDefaultImages(parsedRequest.images, parsedRequest.theme);
+    parsedRequest.images = getDefaultImages(
+        parsedRequest.images,
+        parsedRequest.theme
+    );
 
     // Remove first image if user selected the "No image" option
     if (parsedRequest.images[0] === NO_IMAGE) {
@@ -72,14 +85,19 @@ function getArray(stringOrArray: string[] | string | undefined): string[] {
 }
 
 function getDefaultImages(images: string[], theme: Theme): string[] {
-    const defaultImage = theme === 'light'
-        ? 'https://assets.vercel.com/image/upload/front/assets/design/vercel-triangle-black.svg'
-        : 'https://assets.vercel.com/image/upload/front/assets/design/vercel-triangle-white.svg';
+    const defaultImage =
+        theme === 'light'
+            ? 'https://assets.vercel.com/image/upload/front/assets/design/vercel-triangle-black.svg'
+            : 'https://assets.vercel.com/image/upload/front/assets/design/vercel-triangle-white.svg';
 
     if (!images || !images[0]) {
         return [defaultImage];
     }
-    if (images[0] !== NO_IMAGE && !images[0].startsWith('https://assets.vercel.com/') && !images[0].startsWith('https://assets.zeit.co/')) {
+    if (
+        images[0] !== NO_IMAGE &&
+        !images[0].startsWith('https://assets.vercel.com/') &&
+        !images[0].startsWith('https://assets.zeit.co/')
+    ) {
         images[0] = defaultImage;
     }
     return images;
