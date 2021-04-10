@@ -89,11 +89,17 @@ const TextInput = ({ value, oninput, placeholder = '' }: TextInputProps) => {
 interface ButtonProps {
     label: string;
     onclick: () => void;
+    className?: string;
     style?: object;
 }
 
-const Button = ({ label, onclick, style = {} }: ButtonProps) => {
-    return H('button', { onclick, style }, label);
+const Button = ({
+    label,
+    onclick,
+    className = '',
+    style = {},
+}: ButtonProps) => {
+    return H('button', { onclick, className, style }, label);
 };
 
 interface FieldProps {
@@ -581,6 +587,7 @@ const App = (_: any, state: AppState, setState: SetState) => {
                 },
             }),
             H(Button, {
+                className: 'btn-cta',
                 label: 'Copy image URL',
                 onclick: () => {
                     copyImageUrl();
@@ -589,6 +596,7 @@ const App = (_: any, state: AppState, setState: SetState) => {
             H(Button, {
                 label: 'Download image',
                 style: { marginTop: '0.8rem' },
+                className: 'btn-cta',
                 onclick: () => {
                     window.open(url.href, '_blank');
                 },

@@ -301,6 +301,15 @@ img {
     border-color: #ddd;
 }
 
+.btn-cta {
+    color: #0076ff;
+}
+
+.btn-cta:hover {
+    color: #0076ff;
+    border-color: #0076ff;
+}
+
 @media (min-width: 1000px) {
     .field.field-custom {
         font-size: 0.8rem;
