@@ -285,7 +285,7 @@ img {
 }
 
 .image-wrapper {
-    display: flex;
+    display: block;
     cursor: pointer;
     text-decoration: none;
     background: #fff;
