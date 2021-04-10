@@ -145,6 +145,7 @@ const imageLightOptions: DropdownOption[] = [
     { text: 'Vercel', value: 'https://assets.vercel.com/image/upload/front/assets/design/vercel-triangle-black.svg' },
     { text: 'Next.js', value: 'https://assets.vercel.com/image/upload/front/assets/design/nextjs-black-logo.svg' },
     { text: 'Hyper', value: 'https://assets.vercel.com/image/upload/front/assets/design/hyper-color-logo.svg' },
+    { text: 'No image', value: 'NO_IMAGE' },
 ];
 
 const imageDarkOptions: DropdownOption[] = [
@@ -152,6 +153,7 @@ const imageDarkOptions: DropdownOption[] = [
     { text: 'Vercel', value: 'https://assets.vercel.com/image/upload/front/assets/design/vercel-triangle-white.svg' },
     { text: 'Next.js', value: 'https://assets.vercel.com/image/upload/front/assets/design/nextjs-white-logo.svg' },
     { text: 'Hyper', value: 'https://assets.vercel.com/image/upload/front/assets/design/hyper-bw-logo.svg' },
+    { text: 'No image', value: 'NO_IMAGE' },
 ];
 
 const widthOptions = [
@@ -183,6 +185,7 @@ interface AppState extends ParsedRequest {
     selectedImageIndex: number;
     widths: string[];
     heights: string[];
+    hideFirstImage: boolean;
     overrideUrl: URL | null;
 }
 
@@ -222,7 +225,11 @@ const App = (_: any, state: AppState, setState: SetState) => {
     url.searchParams.append('theme', theme);
     url.searchParams.append('md', mdValue);
     url.searchParams.append('fontSize', fontSize);
-    for (let image of images) {
+    for (let i = 0; i< images.length; i++) {
+        if (state.hideFirstImage && i === 0) {
+            continue;
+        }
+        const image = images[i];
         url.searchParams.append('images', image);
     }
     for (let width of widths) {

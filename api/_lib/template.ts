@@ -100,6 +100,9 @@ function getCss(theme: string, fontSize: string) {
         font-style: normal;
         color: ${foreground};
         line-height: 1.8;
+    }
+    .heading.no-image {
+        margin-top: -200px;
     }`;
 }
 
@@ -122,7 +125,7 @@ export function getHtml(parsedReq: ParsedRequest) {
                 ).join('')}
             </div>
             <div class="spacer">
-            <div class="heading">${emojify(
+            <div class="${images.length ? 'heading' : 'heading no-image'}">${emojify(
                 md ? marked(text) : sanitizeHtml(text)
             )}
             </div>

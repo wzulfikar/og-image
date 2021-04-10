@@ -2,6 +2,9 @@ import { IncomingMessage } from 'http';
 import { parse } from 'url';
 import { ParsedRequest, Theme } from './types';
 
+// Determine if user wants no image
+const NO_IMAGE = 'NO_IMAGE'
+
 export function parseRequest(req: IncomingMessage) {
     console.log('HTTP ' + req.url);
     const { pathname, query } = parse(req.url || '/', true);
@@ -37,6 +40,12 @@ export function parseRequest(req: IncomingMessage) {
         heights: getArray(heights),
     };
     parsedRequest.images = getDefaultImages(parsedRequest.images, parsedRequest.theme);
+
+    // Remove first image if user selected the "No image" option
+    if (parsedRequest.images[0] === NO_IMAGE) {
+        parsedRequest.images = parsedRequest.images.slice(1);
+    }
+
     return parsedRequest;
 }
 
@@ -58,7 +67,7 @@ function getDefaultImages(images: string[], theme: Theme): string[] {
     if (!images || !images[0]) {
         return [defaultImage];
     }
-    if (!images[0].startsWith('https://assets.vercel.com/') && !images[0].startsWith('https://assets.zeit.co/')) {
+    if (images[0] !== NO_IMAGE && !images[0].startsWith('https://assets.vercel.com/') && !images[0].startsWith('https://assets.zeit.co/')) {
         images[0] = defaultImage;
     }
     return images;
