@@ -158,8 +158,9 @@ button:hover {
 
 .select-wrapper.small {
     height: 24px;
-    min-width: 100px;
+    min-width: 97px;
     width: 100px;
+    margin-right: 5px;
 }
 
 .select-arrow {
