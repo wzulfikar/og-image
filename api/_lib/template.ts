@@ -126,7 +126,7 @@ function getCss(
         line-height: 1.8;
     }
     .heading.no-image {
-        margin-top: -150px;
+        margin-top: -125px;
     }`;
 }
 
