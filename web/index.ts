@@ -329,7 +329,53 @@ const App = (_: any, state: AppState, setState: SetState) => {
         { className: 'split' },
         H(
             'div',
-            { className: 'pull-left' },
+            {
+                className: 'pull-left',
+                style: {
+                    margin: '1rem',
+                    display: 'flex',
+                    flexDirection: 'column',
+                },
+            },
+            H(ImagePreview, {
+                src: overrideUrl ? overrideUrl.href : url.href,
+                loading: loading,
+                onload: () => setState({ loading: false }),
+                onerror: () => {
+                    setState({
+                        showToast: true,
+                        messageToast: 'Oops, an error occurred',
+                    });
+                    setTimeout(() => setState({ showToast: false }), 2000);
+                },
+                onclick: (e: Event) => {
+                    e.preventDefault();
+                    copyImageUrl();
+                    return false;
+                },
+            }),
+            H(Button, {
+                className: 'btn-cta',
+                label: 'Copy image URL',
+                onclick: () => {
+                    copyImageUrl();
+                },
+            }),
+            H(Button, {
+                label: 'Download image',
+                style: { marginTop: '0.8rem' },
+                className: 'btn-cta',
+                onclick: () => {
+                    window.open(url.href, '_blank');
+                },
+            })
+        ),
+        H(
+            'div',
+            {
+                className: 'pull-right',
+                style: { marginTop: '1rem', minWidth: '30%' },
+            },
             H(
                 'div',
                 H(Field, {
@@ -565,42 +611,6 @@ const App = (_: any, state: AppState, setState: SetState) => {
                     }),
                 })
             )
-        ),
-        H(
-            'div',
-            { className: 'pull-right', style: { margin: '1rem' } },
-            H(ImagePreview, {
-                src: overrideUrl ? overrideUrl.href : url.href,
-                loading: loading,
-                onload: () => setState({ loading: false }),
-                onerror: () => {
-                    setState({
-                        showToast: true,
-                        messageToast: 'Oops, an error occurred',
-                    });
-                    setTimeout(() => setState({ showToast: false }), 2000);
-                },
-                onclick: (e: Event) => {
-                    e.preventDefault();
-                    copyImageUrl();
-                    return false;
-                },
-            }),
-            H(Button, {
-                className: 'btn-cta',
-                label: 'Copy image URL',
-                onclick: () => {
-                    copyImageUrl();
-                },
-            }),
-            H(Button, {
-                label: 'Download image',
-                style: { marginTop: '0.8rem' },
-                className: 'btn-cta',
-                onclick: () => {
-                    window.open(url.href, '_blank');
-                },
-            })
         ),
         H(Toast, {
             message: messageToast,
