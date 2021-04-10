@@ -301,13 +301,29 @@ img {
     border-color: #ddd;
 }
 
+.image-preview-container {
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    position: sticky;
+    top: 0px;
+    background: white;
+    z-index: 10;
+}
+
+.image-preview-container .image-preview-actions {
+    display: flex;
+}
+
 .btn-cta {
-    color: #0076ff;
+    color: white;
+    background: black;
+    letter-spacing: 0.1rem;
 }
 
 .btn-cta:hover {
-    color: #0076ff;
-    border-color: #0076ff;
+    color: black;
+    border-color: black;
 }
 
 @media (min-width: 1000px) {
@@ -323,9 +339,6 @@ img {
     .field {
         margin: 20px 10px;
     }
-    .pull-left {
-        margin-left: 1.5em;
-    }
 }
 
 @media (max-width: 900px) {
@@ -337,6 +350,12 @@ img {
         width: 60px;
         font-size: 13px;
     }
+}
+
+.github-corner {
+    position: absolute;
+    top: 0;
+    right: 0;
 }
 
 .github-corner:hover .octo-arm {
@@ -365,17 +384,12 @@ img {
     .github-corner .octo-arm {
         animation: octocat-wave 560ms ease-in-out;
     }
-    .container {
-        margin: 19%;
-    }
     .svg {
         right: -33%;
     }
 }
+
 @media (max-width: 360px) {
-    .container {
-        margin: 29.5%;
-    }
     .svg {
         right: -52%;
     }

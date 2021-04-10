@@ -330,12 +330,7 @@ const App = (_: any, state: AppState, setState: SetState) => {
         H(
             'div',
             {
-                className: 'pull-left',
-                style: {
-                    margin: '1rem',
-                    display: 'flex',
-                    flexDirection: 'column',
-                },
+                className: 'pull-left image-preview-container',
             },
             H(ImagePreview, {
                 src: overrideUrl ? overrideUrl.href : url.href,
@@ -354,21 +349,25 @@ const App = (_: any, state: AppState, setState: SetState) => {
                     return false;
                 },
             }),
-            H(Button, {
-                className: 'btn-cta',
-                label: 'Copy image URL',
-                onclick: () => {
-                    copyImageUrl();
-                },
-            }),
-            H(Button, {
-                label: 'Download image',
-                style: { marginTop: '0.8rem' },
-                className: 'btn-cta',
-                onclick: () => {
-                    window.open(url.href, '_blank');
-                },
-            })
+            H(
+                'div',
+                { className: 'image-preview-actions' },
+                H(Button, {
+                    className: 'btn-cta',
+                    label: 'Copy image URL',
+                    onclick: () => {
+                        copyImageUrl();
+                    },
+                }),
+                H(Button, {
+                    label: 'Download',
+                    style: { marginLeft: '0.5rem' },
+                    className: 'btn-cta',
+                    onclick: () => {
+                        window.open(url.href, '_blank');
+                    },
+                })
+            )
         ),
         H(
             'div',
