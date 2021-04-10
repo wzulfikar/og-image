@@ -15,33 +15,42 @@ const bold = readFileSync(`${__dirname}/../_fonts/Inter-Bold.woff2`).toString(
 const mono = readFileSync(`${__dirname}/../_fonts/Vera-Mono.woff2`).toString(
     'base64'
 );
+const defaultBackgroundImage = (radial: string) =>
+    `radial-gradient(circle at 25px 25px, ${radial} 2%, transparent 0%), radial-gradient(circle at 75px 75px, ${radial} 2%, transparent 0%)`;
 
 function getCss(
     theme: string,
     fontSize: string,
     customBackground?: string,
     customForeground?: string,
-    customRadial?: string
+    customRadial?: string,
+    customBackgroundImage?: string
 ) {
-    let background = 'white';
-    let foreground = 'black';
     let radial = 'lightgray';
+    let background = 'white';
+    let backgroundImage = defaultBackgroundImage(radial);
+    let foreground = 'black';
 
     switch (theme) {
         case 'dark':
+            radial = '#313131';
             background = 'black';
+            backgroundImage = defaultBackgroundImage(radial);
             foreground = 'white';
-            radial = 'dimgray';
             break;
         case 'dimmed':
+            radial = '#4a4a4a';
             background = '#1e2228';
+            backgroundImage = defaultBackgroundImage(radial);
             foreground = 'white';
-            radial = 'dimgray';
             break;
         case 'custom':
-            background = customBackground as string;
-            foreground = customForeground as string;
             radial = customRadial as string;
+            background = customBackground as string;
+            backgroundImage = (customBackgroundImage?.startsWith('http')
+                ? `url(${customBackgroundImage})`
+                : defaultBackgroundImage(radial)) as string;
+            foreground = customForeground as string;
             break;
     }
 
@@ -69,8 +78,17 @@ function getCss(
 
     body {
         background: ${background};
-        background-image: radial-gradient(circle at 25px 25px, ${radial} 2%, transparent 0%), radial-gradient(circle at 75px 75px, ${radial} 2%, transparent 0%);
+        background-image: ${backgroundImage};
         background-size: 100px 100px;
+        ${
+            backgroundImage.startsWith('url(')
+                ? `
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-position: center center;
+        `
+                : ''
+        }
         height: 100vh;
         display: flex;
         text-align: center;
@@ -142,7 +160,9 @@ export function getHtml(parsedReq: ParsedRequest) {
         customBackground,
         customForeground,
         customRadial,
+        backgroundImage,
     } = parsedReq;
+
     return `<!DOCTYPE html>
 <html>
     <meta charset="utf-8">
@@ -154,7 +174,8 @@ export function getHtml(parsedReq: ParsedRequest) {
             fontSize,
             customBackground,
             customForeground,
-            customRadial
+            customRadial,
+            backgroundImage
         )}
     </style>
     <body>

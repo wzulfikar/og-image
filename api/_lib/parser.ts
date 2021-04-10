@@ -27,6 +27,7 @@ export function parseRequest(req: IncomingMessage) {
         customBackground,
         customForeground,
         customRadial,
+        backgroundImage,
     } = query || {};
 
     if (Array.isArray(fontSize)) {
@@ -60,6 +61,7 @@ export function parseRequest(req: IncomingMessage) {
         customBackground: customBackground as string | undefined,
         customForeground: customForeground as string | undefined,
         customRadial: customRadial as string | undefined,
+        backgroundImage: backgroundImage as string | undefined,
     };
     parsedRequest.images = getDefaultImages(
         parsedRequest.images,

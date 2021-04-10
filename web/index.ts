@@ -64,10 +64,11 @@ const Dropdown = ({ options, value, onchange, small }: DropdownProps) => {
 
 interface TextInputProps {
     value: string;
+    placeholder?: string;
     oninput: (val: string) => void;
 }
 
-const TextInput = ({ value, oninput }: TextInputProps) => {
+const TextInput = ({ value, oninput, placeholder = '' }: TextInputProps) => {
     return H(
         'div',
         { className: 'input-outer-wrapper' },
@@ -77,6 +78,7 @@ const TextInput = ({ value, oninput }: TextInputProps) => {
             H('input', {
                 type: 'text',
                 value,
+                placeholder,
                 oninput: (e: any) => oninput(e.target.value),
             })
         )
@@ -229,6 +231,7 @@ interface AppState extends ParsedRequest {
     customBackground?: string;
     customForeground?: string;
     customRadial?: string;
+    backgroundImage?: string;
 }
 
 type SetState = (state: Partial<AppState>) => void;
@@ -265,6 +268,7 @@ const App = (_: any, state: AppState, setState: SetState) => {
         customBackground = '#000',
         customForeground = '#fff',
         customRadial = 'dimgray',
+        backgroundImage = null,
     } = state;
     const mdValue = md ? '1' : '0';
     const imageOptions =
@@ -280,6 +284,9 @@ const App = (_: any, state: AppState, setState: SetState) => {
         url.searchParams.append('customBackground', customBackground);
         url.searchParams.append('customForeground', customForeground);
         url.searchParams.append('customRadial', customRadial);
+        if (backgroundImage?.startsWith('http')) {
+            url.searchParams.append('backgroundImage', backgroundImage);
+        }
     }
 
     for (let i = 0; i < images.length; i++) {
@@ -321,11 +328,26 @@ const App = (_: any, state: AppState, setState: SetState) => {
                     }),
                 }),
                 H(Field, {
-                    label: 'Custom Background',
+                    label: 'Background image',
                     extendClass: 'field-custom',
                     style: {
                         display: state.theme === 'custom' ? 'block' : 'none',
                         borderTopLeftRadius: '10px',
+                    },
+                    input: H(TextInput, {
+                        value: backgroundImage,
+                        placeholder: 'Insert image url (optional)',
+                        title: 'test',
+                        oninput: (val: string) => {
+                            setLoadingState({ backgroundImage: val });
+                        },
+                    }),
+                }),
+                H(Field, {
+                    label: 'Custom Background',
+                    extendClass: 'field-custom',
+                    style: {
+                        display: state.theme === 'custom' ? 'block' : 'none',
                     },
                     input: H(TextInput, {
                         value: customBackground,
@@ -335,29 +357,29 @@ const App = (_: any, state: AppState, setState: SetState) => {
                     }),
                 }),
                 H(Field, {
-                    label: 'Custom Foreground',
+                    label: 'Custom Radial',
                     extendClass: 'field-custom',
                     style: {
                         display: state.theme === 'custom' ? 'block' : 'none',
                     },
                     input: H(TextInput, {
-                        value: customForeground,
+                        value: customRadial,
                         oninput: (val: string) => {
-                            setLoadingState({ customForeground: val });
+                            setLoadingState({ customRadial: val });
                         },
                     }),
                 }),
                 H(Field, {
-                    label: 'Custom Radial',
+                    label: 'Font Color',
                     extendClass: 'field-custom',
                     style: {
                         display: state.theme === 'custom' ? 'block' : 'none',
                         borderBottomLeftRadius: '10px',
                     },
                     input: H(TextInput, {
-                        value: customRadial,
+                        value: customForeground,
                         oninput: (val: string) => {
-                            setLoadingState({ customRadial: val });
+                            setLoadingState({ customForeground: val });
                         },
                     }),
                 }),

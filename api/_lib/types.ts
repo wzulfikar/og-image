@@ -13,4 +13,5 @@ export interface ParsedRequest {
     customBackground?: string;
     customForeground?: string;
     customRadial?: string;
+    backgroundImage?: string;
 }
