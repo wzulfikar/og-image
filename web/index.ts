@@ -20,6 +20,7 @@ const ImagePreview = ({
     const style = {
         filter: loading ? 'blur(5px)' : '',
         opacity: loading ? 0.1 : 1,
+        borderRadius: '5px',
     };
     const title = 'Click to copy image URL to clipboard';
     return H(
@@ -88,10 +89,11 @@ const TextInput = ({ value, oninput, placeholder = '' }: TextInputProps) => {
 interface ButtonProps {
     label: string;
     onclick: () => void;
+    style?: object;
 }
 
-const Button = ({ label, onclick }: ButtonProps) => {
-    return H('button', { onclick }, label);
+const Button = ({ label, onclick, style = {} }: ButtonProps) => {
+    return H('button', { onclick, style }, label);
 };
 
 interface FieldProps {
@@ -301,6 +303,19 @@ const App = (_: any, state: AppState, setState: SetState) => {
     }
     for (let height of heights) {
         url.searchParams.append('heights', height);
+    }
+
+    function copyImageUrl() {
+        const success = copee.toClipboard(url.href);
+        if (success) {
+            setState({
+                showToast: true,
+                messageToast: 'Copied image URL to clipboard',
+            });
+            setTimeout(() => setState({ showToast: false }), 3000);
+        } else {
+            window.open(url.href, '_blank');
+        }
     }
 
     return H(
@@ -547,7 +562,7 @@ const App = (_: any, state: AppState, setState: SetState) => {
         ),
         H(
             'div',
-            { className: 'pull-right' },
+            { className: 'pull-right', style: { margin: '1rem' } },
             H(ImagePreview, {
                 src: overrideUrl ? overrideUrl.href : url.href,
                 loading: loading,
@@ -561,17 +576,21 @@ const App = (_: any, state: AppState, setState: SetState) => {
                 },
                 onclick: (e: Event) => {
                     e.preventDefault();
-                    const success = copee.toClipboard(url.href);
-                    if (success) {
-                        setState({
-                            showToast: true,
-                            messageToast: 'Copied image URL to clipboard',
-                        });
-                        setTimeout(() => setState({ showToast: false }), 3000);
-                    } else {
-                        window.open(url.href, '_blank');
-                    }
+                    copyImageUrl();
                     return false;
+                },
+            }),
+            H(Button, {
+                label: 'Copy image URL',
+                onclick: () => {
+                    copyImageUrl();
+                },
+            }),
+            H(Button, {
+                label: 'Download image',
+                style: { marginTop: '0.8rem' },
+                onclick: () => {
+                    window.open(url.href, '_blank');
                 },
             })
         ),
