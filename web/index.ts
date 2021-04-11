@@ -1,7 +1,6 @@
 import { NO_IMAGE, ParsedRequest, Theme, FileType } from '../api/_lib/types';
-import trackEvent from '../api/_lib/trackEvent';
 
-const { H, R, copee } = window as any;
+const { H, R, copee, fathom } = window as any;
 let timeout = -1;
 
 interface ImagePreviewProps {
@@ -10,6 +9,17 @@ interface ImagePreviewProps {
     onload: () => void;
     onerror: () => void;
     loading: boolean;
+}
+
+const EVENTS = {
+    copyImageUrl: 'QIRAPKU6',
+    downloadImage: 'TIGSZB4E',
+    fields_selectNoImage: 'K7K0U6WF',
+    fields_selectCustomTheme: 'FTLQFX1M',
+};
+
+function trackEvent(event: keyof typeof EVENTS, centValue?: number) {
+    fathom.trackGoal(EVENTS[event], centValue);
 }
 
 const ImagePreview = ({
