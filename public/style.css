@@ -306,8 +306,7 @@ img {
 }
 
 .image-preview-container {
-    padding: 1rem;
-    padding-bottom: 0.5rem;
+    padding: 0.5rem;
     display: flex;
     flex-direction: column;
     justify-content: end;
@@ -379,10 +378,21 @@ div.what-is-this {
 
 @media (max-width: 1000px) {
     .field {
-        margin: 20px 10px;
+        margin: 0px 10px;
     }
     .image-wrapper {
-        margin-bottom: 10px;
+        margin-bottom: 5px;
+    }
+    .image-preview-container {
+        flex-direction: row;
+    }
+    .image-preview-container .image-preview-actions {
+        flex-direction: column;
+        padding-left: 5px;
+    }
+    .image-preview-container .image-preview-actions .btn-cta:nth-child(2) {
+        margin-left: 0px !important;
+        margin-top: 4px;
     }
 }
 
@@ -390,7 +400,6 @@ div.what-is-this {
     .split {
         flex-wrap: wrap;
     }
-
     .field-label {
         width: 60px;
         font-size: 13px;
