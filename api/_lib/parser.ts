@@ -13,7 +13,7 @@ const DEFAULT_THEME: ParsedRequest['theme'] = 'light';
 
 export function parseRequest(req: IncomingMessage) {
     console.log('HTTP ' + req.url);
-    const { pathname, query } = parse(req.url || '/', true);
+    const { pathname: rawPathname, query } = parse(req.url || '/', true);
     const {
         fontSize,
         images,
@@ -33,6 +33,9 @@ export function parseRequest(req: IncomingMessage) {
     if (Array.isArray(theme)) {
         throw new Error('Expected a single theme');
     }
+
+    // Remove image path from raw path
+    const pathname = rawPathname?.replace('/i/', '/');
 
     const arr = (pathname || '/').slice(1).split('.');
     let extension = '';

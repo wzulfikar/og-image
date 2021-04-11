@@ -285,6 +285,7 @@ interface AppState extends ParsedRequest {
     widths: string[];
     heights: string[];
     overrideUrl: URL | null;
+    stateChanged?: boolean;
     customBackground?: string;
     customForeground?: string;
     customRadial?: string;
@@ -293,7 +294,29 @@ interface AppState extends ParsedRequest {
 
 type SetState = (state: Partial<AppState>) => void;
 
+const imgPath = '/i/';
+
+let persistedState: any = { mounted: false };
+
 const App = (_: any, state: AppState, setState: SetState) => {
+    // Load state based on url
+    if (!persistedState.mounted && window.location.pathname !== '/') {
+        persistedState.mounted = true;
+        persistedState.text = decodeURI(window.location.pathname)
+            .replace('/', '')
+            .replace(/(\.png|\.jpg)/, '');
+
+        const arrays = ['images', 'widths', 'heights'];
+        const params = new URLSearchParams(window.location.search);
+        params.forEach((v, k) => {
+            if (arrays.includes(k)) {
+                persistedState[k] = params.getAll(k);
+            } else {
+                persistedState[k] = v;
+            }
+        });
+    }
+
     const setLoadingState = (newState: Partial<AppState>) => {
         window.clearTimeout(timeout);
         if (state.overrideUrl && state.overrideUrl !== newState.overrideUrl) {
@@ -306,23 +329,26 @@ const App = (_: any, state: AppState, setState: SetState) => {
             );
         }
 
-        setState({ ...newState, loading: true });
+        setState({ ...newState, loading: true, stateChanged: true });
     };
 
     const {
-        fileType = 'png',
-        fontSize = '100px',
-        theme = 'light',
-        md = true,
-        text = '**Hello** World',
-        images = [imageLightOptions[0].value],
-        widths = [],
-        heights = [],
+        fileType = persistedState.fileType || 'png',
+        fontSize = persistedState.fontSize || '100px',
+        theme = persistedState.theme || 'light',
+        md = persistedState.md || true,
+        text = persistedState.text || '**Hello** World',
+        images = (persistedState.images as string[]) || [
+            imageLightOptions[0].value,
+        ],
+        widths = (persistedState.widths as string[]) || [],
+        heights = (persistedState.heights as string[]) || [],
         showToast = false,
         messageToast = '',
         loading = true,
         selectedImageIndex = 0,
         overrideUrl = null,
+        stateChanged = false,
         customBackground = '#000',
         customForeground = '#fff',
         customRadial = 'dimgray',
@@ -335,8 +361,8 @@ const App = (_: any, state: AppState, setState: SetState) => {
     const isSvgPornSelected =
         imageOptions[selectedImageIndex].text === 'svgporn';
 
-    const url = new URL(window.location.origin);
-    url.pathname = `${encodeURIComponent(text)}.${fileType}`;
+    const url = new URL(window.location.origin + imgPath);
+    url.pathname += `${encodeURIComponent(text)}.${fileType}`;
     url.searchParams.append('theme', theme);
     url.searchParams.append('md', mdValue);
     url.searchParams.append('fontSize', fontSize);
@@ -379,6 +405,26 @@ const App = (_: any, state: AppState, setState: SetState) => {
         } else {
             window.open(url.href, '_blank');
         }
+        updateUrl();
+    }
+
+    function downloadImage() {
+        trackEvent('downloadImage');
+        window.open(url.href, '_blank');
+        updateUrl();
+    }
+
+    // Create preview url
+    const previewUrl = url.href.replace(imgPath, '/');
+
+    // Update url state (this adds new entry in browser history)
+    function updateUrl() {
+        window.history.pushState({}, 'Open Graph Image', previewUrl);
+    }
+
+    if (stateChanged) {
+        // Replace url state (this doesn't add new entry in browser history)
+        window.history.replaceState({}, 'Open Graph Image', previewUrl);
     }
 
     return H(
@@ -421,8 +467,7 @@ const App = (_: any, state: AppState, setState: SetState) => {
                     style: { marginLeft: '0.5rem' },
                     className: 'btn-cta',
                     onclick: () => {
-                        trackEvent('downloadImage');
-                        window.open(url.href, '_blank');
+                        downloadImage();
                     },
                 })
             )
