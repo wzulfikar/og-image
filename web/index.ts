@@ -338,6 +338,7 @@ const App = (_: any, state: AppState, setState: SetState) => {
         url.searchParams.append('customRadial', customRadial);
         if (backgroundImage?.startsWith('http')) {
             url.searchParams.append('backgroundImage', backgroundImage);
+            trackEvent('fields_insertBackgroundImage');
         }
     }
 
