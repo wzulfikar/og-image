@@ -1,6 +1,7 @@
 import { NO_IMAGE, ParsedRequest, Theme, FileType } from '../api/_lib/types';
+import trackEvent from './trackEvent';
 
-const { H, R, copee, fathom } = window as any;
+const { H, R, copee } = window as any;
 let timeout = -1;
 
 interface ImagePreviewProps {
@@ -330,6 +331,7 @@ const App = (_: any, state: AppState, setState: SetState) => {
     }
 
     function copyImageUrl() {
+        trackEvent('copyImageUrl');
         const success = copee.toClipboard(url.href);
         if (success) {
             setState({
@@ -382,6 +384,7 @@ const App = (_: any, state: AppState, setState: SetState) => {
                     style: { marginLeft: '0.5rem' },
                     className: 'btn-cta',
                     onclick: () => {
+                        trackEvent('downloadImage');
                         window.open(url.href, '_blank');
                     },
                 })
@@ -406,6 +409,11 @@ const App = (_: any, state: AppState, setState: SetState) => {
                                     ? imageLightOptions
                                     : imageDarkOptions;
                             let clone = [...images];
+
+                            if (val === 'custom') {
+                                trackEvent('fields_selectCustomTheme');
+                            }
+
                             clone[0] = options[selectedImageIndex].value;
                             setLoadingState({ theme: val, images: clone });
                         },
@@ -520,6 +528,11 @@ const App = (_: any, state: AppState, setState: SetState) => {
                                 const selected = imageOptions
                                     .map((o) => o.value)
                                     .indexOf(val);
+
+                                if (val === NO_IMAGE) {
+                                    trackEvent('fields_selectNoImage');
+                                }
+
                                 setLoadingState({
                                     images: clone,
                                     selectedImageIndex: selected,
