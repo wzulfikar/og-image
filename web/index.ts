@@ -1,5 +1,5 @@
 import { NO_IMAGE, ParsedRequest, Theme, FileType } from '../api/_lib/types';
-import trackEvent from './trackEvent';
+import trackEvent from '../api/_lib/trackEvent';
 
 const { H, R, copee } = window as any;
 let timeout = -1;
