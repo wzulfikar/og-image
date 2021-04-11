@@ -19,10 +19,22 @@ const EVENTS = {
     downloadImage: 'TIGSZB4E',
     fields_selectNoImage: 'K7K0U6WF',
     fields_selectCustomTheme: 'FTLQFX1M',
+    fields_insertBackgroundImage: 'TRQT6IPC',
+    fields_addImage: 'IYZUFBCY',
+};
+
+// Register events that should only be tracked once per page view
+const trackOnce: { [key: string]: boolean } = {
+    fields_selectNoImage: false,
+    fields_selectCustomTheme: false,
+    fields_insertBackgroundImage: false,
 };
 
 function trackEvent(event: keyof typeof EVENTS, centValue?: number) {
-    fathom.trackGoal(EVENTS[event], centValue);
+    if (trackOnce[event] === undefined || trackOnce[event] === false) {
+        trackOnce[event] = true;
+        fathom.trackGoal(EVENTS[event], centValue);
+    }
 }
 
 const ImagePreview = ({
@@ -648,6 +660,7 @@ const App = (_: any, state: AppState, setState: SetState) => {
                     input: H(Button, {
                         label: `Add Image ${images.length + 1}`,
                         onclick: () => {
+                            trackEvent('fields_addImage');
                             const nextImage =
                                 images.length === 1
                                     ? 'https://cdn.jsdelivr.net/gh/remojansen/logo.ts@master/ts.svg'
