@@ -308,6 +308,7 @@ const App = (_: any, state: AppState, setState: SetState) => {
 
         setState({ ...newState, loading: true });
     };
+
     const {
         fileType = 'png',
         fontSize = '100px',
@@ -327,10 +328,10 @@ const App = (_: any, state: AppState, setState: SetState) => {
         customRadial = 'dimgray',
         backgroundImage = null,
     } = state;
+
     const mdValue = md ? '1' : '0';
     const imageOptions =
         theme === 'light' ? imageLightOptions : imageDarkOptions;
-
     const isSvgPornSelected =
         imageOptions[selectedImageIndex].text === 'svgporn';
 
@@ -353,6 +354,7 @@ const App = (_: any, state: AppState, setState: SetState) => {
 
     for (let i = 0; i < images.length; i++) {
         let image = images[i];
+        // Rewrite first image if "svgporn" is selected
         if (i === 0 && isSvgPornSelected) {
             image = `svgporn/${image}`;
         }
@@ -449,7 +451,11 @@ const App = (_: any, state: AppState, setState: SetState) => {
                                 trackEvent('fields_selectCustomTheme');
                             }
 
-                            clone[0] = options[selectedImageIndex].value;
+                            // Reset first image to default value if svgporn is not selected
+                            if (!isSvgPornSelected) {
+                                clone[0] = options[selectedImageIndex].value;
+                            }
+
                             setLoadingState({ theme: val, images: clone });
                         },
                     }),
