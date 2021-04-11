@@ -96,6 +96,7 @@ interface TextInputProps {
     value: string;
     type?: string;
     placeholder?: string;
+    style?: object;
     oninput: (val: string) => void;
 }
 
@@ -104,10 +105,11 @@ const TextInput = ({
     oninput,
     type = 'text',
     placeholder = '',
+    style = {},
 }: TextInputProps) => {
     return H(
         'div',
-        { className: 'input-outer-wrapper' },
+        { className: 'input-outer-wrapper', style },
         H(
             'div',
             {
@@ -229,6 +231,7 @@ const imageLightOptions: DropdownOption[] = [
         value:
             'https://assets.vercel.com/image/upload/front/assets/design/hyper-color-logo.svg',
     },
+    { text: 'svgporn', value: '' },
     { text: 'No image', value: NO_IMAGE },
 ];
 
@@ -248,6 +251,7 @@ const imageDarkOptions: DropdownOption[] = [
         value:
             'https://assets.vercel.com/image/upload/front/assets/design/hyper-bw-logo.svg',
     },
+    { text: 'svgporn', value: '' },
     { text: 'No image', value: NO_IMAGE },
 ];
 
@@ -280,7 +284,6 @@ interface AppState extends ParsedRequest {
     selectedImageIndex: number;
     widths: string[];
     heights: string[];
-    hideFirstImage: boolean;
     overrideUrl: URL | null;
     customBackground?: string;
     customForeground?: string;
@@ -327,6 +330,10 @@ const App = (_: any, state: AppState, setState: SetState) => {
     const mdValue = md ? '1' : '0';
     const imageOptions =
         theme === 'light' ? imageLightOptions : imageDarkOptions;
+
+    const isSvgPornSelected =
+        imageOptions[selectedImageIndex].text === 'svgporn';
+
     const url = new URL(window.location.origin);
     url.pathname = `${encodeURIComponent(text)}.${fileType}`;
     url.searchParams.append('theme', theme);
@@ -345,10 +352,10 @@ const App = (_: any, state: AppState, setState: SetState) => {
     }
 
     for (let i = 0; i < images.length; i++) {
-        if (state.hideFirstImage && i === 0) {
-            continue;
+        let image = images[i];
+        if (i === 0 && isSvgPornSelected) {
+            image = `svgporn/${image}`;
         }
-        const image = images[i];
         url.searchParams.append('images', image);
     }
     for (let width of widths) {
@@ -451,7 +458,7 @@ const App = (_: any, state: AppState, setState: SetState) => {
                     label: 'Background image',
                     extendClass: 'field-custom',
                     style: {
-                        display: state.theme === 'custom' ? 'block' : 'none',
+                        display: theme === 'custom' ? 'block' : 'none',
                         borderTopRightRadius: '10px',
                     },
                     input: H(TextInput, {
@@ -467,7 +474,7 @@ const App = (_: any, state: AppState, setState: SetState) => {
                     label: 'Custom Background',
                     extendClass: 'field-custom',
                     style: {
-                        display: state.theme === 'custom' ? 'block' : 'none',
+                        display: theme === 'custom' ? 'block' : 'none',
                     },
                     input: H(TextInput, {
                         type: 'color',
@@ -481,7 +488,7 @@ const App = (_: any, state: AppState, setState: SetState) => {
                     label: 'Custom Radial',
                     extendClass: 'field-custom',
                     style: {
-                        display: state.theme === 'custom' ? 'block' : 'none',
+                        display: theme === 'custom' ? 'block' : 'none',
                     },
                     input: H(TextInput, {
                         type: 'color',
@@ -495,7 +502,7 @@ const App = (_: any, state: AppState, setState: SetState) => {
                     label: 'Font Color',
                     extendClass: 'field-custom',
                     style: {
-                        display: state.theme === 'custom' ? 'block' : 'none',
+                        display: theme === 'custom' ? 'block' : 'none',
                         borderBottomRightRadius: '10px',
                     },
                     input: H(TextInput, {
@@ -564,6 +571,22 @@ const App = (_: any, state: AppState, setState: SetState) => {
                                 setLoadingState({
                                     images: clone,
                                     selectedImageIndex: selected,
+                                });
+                            },
+                        }),
+                        H(TextInput, {
+                            value: images[0],
+                            placeholder: 'github-octocat',
+                            style: {
+                                marginTop: '10px',
+                                display: isSvgPornSelected ? 'block' : 'none',
+                            },
+                            oninput: (val: string) => {
+                                let clone = [...images];
+                                clone[0] = val;
+                                setLoadingState({
+                                    images: clone,
+                                    overrideUrl: url,
                                 });
                             },
                         }),

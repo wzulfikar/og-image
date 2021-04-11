@@ -307,6 +307,7 @@ img {
 
 .image-preview-container {
     padding: 1rem;
+    padding-bottom: 0.5rem;
     display: flex;
     flex-direction: column;
     justify-content: end;

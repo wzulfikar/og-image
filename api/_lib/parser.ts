@@ -92,8 +92,20 @@ function getDefaultImages(images: string[], theme: Theme): string[] {
     if (!images || !images[0]) {
         return [defaultImage];
     }
+
+    // Resolve svgporn images to the actual url
+    const svgpornBaseUrl = 'https://cdn.svgporn.com/logos';
+    images.forEach((image, i) => {
+        if (image.startsWith('svgporn/')) {
+            const logo = image.replace('svgporn/', '');
+            images[i] = `${svgpornBaseUrl}/${logo}.svg`;
+        }
+    });
+
+    // Override first image to `defaultImage`
     if (
         images[0] !== NO_IMAGE &&
+        !images[0].startsWith(svgpornBaseUrl) &&
         !images[0].startsWith('https://assets.vercel.com/') &&
         !images[0].startsWith('https://assets.zeit.co/')
     ) {
