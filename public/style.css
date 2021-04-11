@@ -305,6 +305,7 @@ img {
     padding: 1rem;
     display: flex;
     flex-direction: column;
+    justify-content: end;
     position: sticky;
     top: 0px;
     background: white;
@@ -326,12 +327,24 @@ img {
     border-color: black;
 }
 
+.field.field-custom .input-inner-wrapper.color-hint {
+    width: 50%;
+}
+
+.field.field-custom span.color-hint {
+    width: 30%;
+    padding: 10px;
+    text-align: right;
+    color: #818181;
+}
+
 @media (min-width: 1000px) {
     .field.field-custom {
         font-size: 0.8rem;
         background: whitesmoke;
         color: #424242;
         font-weight: 500;
+        border-left: 5px solid #0000001f;
     }
 }
 

@@ -65,23 +65,40 @@ const Dropdown = ({ options, value, onchange, small }: DropdownProps) => {
 
 interface TextInputProps {
     value: string;
+    type?: string;
     placeholder?: string;
     oninput: (val: string) => void;
 }
 
-const TextInput = ({ value, oninput, placeholder = '' }: TextInputProps) => {
+const TextInput = ({
+    value,
+    oninput,
+    type = 'text',
+    placeholder = '',
+}: TextInputProps) => {
     return H(
         'div',
         { className: 'input-outer-wrapper' },
         H(
             'div',
-            { className: 'input-inner-wrapper' },
+            {
+                className: `${
+                    type === 'color' ? 'color-hint' : ''
+                } input-inner-wrapper`,
+            },
             H('input', {
-                type: 'text',
+                type: type,
                 value,
                 placeholder,
                 oninput: (e: any) => oninput(e.target.value),
             })
+        ),
+        H(
+            'span',
+            {
+                className: type === 'color' ? 'color-hint' : undefined,
+            },
+            type === 'color' ? value : '' // Show color-hint only for input type "color"
         )
     );
 };
@@ -398,7 +415,7 @@ const App = (_: any, state: AppState, setState: SetState) => {
                     extendClass: 'field-custom',
                     style: {
                         display: state.theme === 'custom' ? 'block' : 'none',
-                        borderTopLeftRadius: '10px',
+                        borderTopRightRadius: '10px',
                     },
                     input: H(TextInput, {
                         value: backgroundImage,
@@ -416,6 +433,7 @@ const App = (_: any, state: AppState, setState: SetState) => {
                         display: state.theme === 'custom' ? 'block' : 'none',
                     },
                     input: H(TextInput, {
+                        type: 'color',
                         value: customBackground,
                         oninput: (val: string) => {
                             setLoadingState({ customBackground: val });
@@ -429,6 +447,7 @@ const App = (_: any, state: AppState, setState: SetState) => {
                         display: state.theme === 'custom' ? 'block' : 'none',
                     },
                     input: H(TextInput, {
+                        type: 'color',
                         value: customRadial,
                         oninput: (val: string) => {
                             setLoadingState({ customRadial: val });
@@ -440,9 +459,10 @@ const App = (_: any, state: AppState, setState: SetState) => {
                     extendClass: 'field-custom',
                     style: {
                         display: state.theme === 'custom' ? 'block' : 'none',
-                        borderBottomLeftRadius: '10px',
+                        borderBottomRightRadius: '10px',
                     },
                     input: H(TextInput, {
+                        type: 'color',
                         value: customForeground,
                         oninput: (val: string) => {
                             setLoadingState({ customForeground: val });
