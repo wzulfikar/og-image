@@ -1,4 +1,7 @@
-import { NO_IMAGE, ParsedRequest, Theme, FileType } from '../api/_lib/types';
+import { ParsedRequest, Theme, FileType } from '../api/_lib/types';
+
+// TODO: fix non-types import so we can just import this from api/_lib/types
+const NO_IMAGE = 'NO_IMAGE';
 
 const { H, R, copee, fathom } = window as any;
 let timeout = -1;
