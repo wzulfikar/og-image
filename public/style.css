@@ -24,6 +24,10 @@ footer {
     font-size: 0.8em;
 }
 
+footer a {
+    color: black;
+}
+
 .center,
 h1 {
     text-align: center;
