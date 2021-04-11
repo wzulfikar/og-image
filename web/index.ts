@@ -32,8 +32,8 @@ const trackOnce: { [key: string]: boolean } = {
 
 function trackEvent(event: keyof typeof EVENTS, centValue?: number) {
     if (trackOnce[event] === undefined || trackOnce[event] === false) {
-        trackOnce[event] = true;
         fathom.trackGoal(EVENTS[event], centValue);
+        trackOnce[event] = true; // Mark event as tracked
     }
 }
 
