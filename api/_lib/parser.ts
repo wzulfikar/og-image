@@ -105,14 +105,5 @@ function getDefaultImages(images: string[], theme: Theme): string[] {
         }
     });
 
-    // Override first image to `defaultImage`
-    if (
-        images[0] !== NO_IMAGE &&
-        !images[0].startsWith(svgpornBaseUrl) &&
-        !images[0].startsWith('https://assets.vercel.com/') &&
-        !images[0].startsWith('https://assets.zeit.co/')
-    ) {
-        images[0] = defaultImage;
-    }
     return images;
 }

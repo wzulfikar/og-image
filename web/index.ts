@@ -21,6 +21,8 @@ const EVENTS = {
     fields_selectCustomTheme: 'FTLQFX1M',
     fields_insertBackgroundImage: 'TRQT6IPC',
     fields_addImage: 'IYZUFBCY',
+    fields_selectSVGPorn: 'FN8RZDVF',
+    fields_selectCustomImage: 'SDORCXVS',
 };
 
 // Register events that should only be tracked once per page view
@@ -67,23 +69,39 @@ interface DropdownOption {
 interface DropdownProps {
     options: DropdownOption[];
     value: string;
-    onchange: (val: string) => void;
+    selectedLabel?: string;
+    onchange: (val: string, selectedIdx: number) => void;
     small: boolean;
 }
 
-const Dropdown = ({ options, value, onchange, small }: DropdownProps) => {
+const Dropdown = ({
+    options,
+    value,
+    selectedLabel,
+    onchange,
+    small,
+}: DropdownProps) => {
     const wrapper = small ? 'select-wrapper small' : 'select-wrapper';
     const arrow = small ? 'select-arrow small' : 'select-arrow';
+
     return H(
         'div',
         { className: wrapper },
         H(
             'select',
-            { onchange: (e: any) => onchange(e.target.value) },
+            {
+                onchange: (e: any) =>
+                    onchange(e.target.value, e.target.selectedIndex),
+            },
             options.map((o) =>
                 H(
                     'option',
-                    { value: o.value, selected: value === o.value },
+                    {
+                        value: o.value,
+                        selected: selectedLabel
+                            ? o.text === selectedLabel
+                            : value === o.value,
+                    },
                     o.text
                 )
             )
@@ -231,7 +249,8 @@ const imageLightOptions: DropdownOption[] = [
         value:
             'https://assets.vercel.com/image/upload/front/assets/design/hyper-color-logo.svg',
     },
-    { text: 'svgporn', value: '' },
+    { text: 'SVGPorn', value: '' },
+    { text: 'Custom Image', value: '' },
     { text: 'No image', value: NO_IMAGE },
 ];
 
@@ -251,7 +270,8 @@ const imageDarkOptions: DropdownOption[] = [
         value:
             'https://assets.vercel.com/image/upload/front/assets/design/hyper-bw-logo.svg',
     },
-    { text: 'svgporn', value: '' },
+    { text: 'SVGPorn', value: '' },
+    { text: 'Custom Image', value: '' },
     { text: 'No image', value: NO_IMAGE },
 ];
 
@@ -359,7 +379,9 @@ const App = (_: any, state: AppState, setState: SetState) => {
     const imageOptions =
         theme === 'light' ? imageLightOptions : imageDarkOptions;
     const isSvgPornSelected =
-        imageOptions[selectedImageIndex].text === 'svgporn';
+        imageOptions[selectedImageIndex].text === 'SVGPorn';
+    const isCustomImageSelected =
+        imageOptions[selectedImageIndex].text === 'Custom Image';
 
     const url = new URL(window.location.origin + imgPath);
     url.pathname += `${encodeURIComponent(text)}.${fileType}`;
@@ -381,7 +403,7 @@ const App = (_: any, state: AppState, setState: SetState) => {
     for (let i = 0; i < images.length; i++) {
         let image = images[i];
         // Rewrite first image if "svgporn" is selected
-        if (i === 0 && isSvgPornSelected) {
+        if (i === 0 && isSvgPornSelected && image) {
             image = `svgporn/${image}`;
         }
         url.searchParams.append('images', image);
@@ -496,8 +518,8 @@ const App = (_: any, state: AppState, setState: SetState) => {
                                 trackEvent('fields_selectCustomTheme');
                             }
 
-                            // Reset first image to default value if svgporn is not selected
-                            if (!isSvgPornSelected) {
+                            // Reset first image to default value if svgporn/custom image are not selected
+                            if (!isSvgPornSelected && !isCustomImageSelected) {
                                 clone[0] = options[selectedImageIndex].value;
                             }
 
@@ -608,20 +630,27 @@ const App = (_: any, state: AppState, setState: SetState) => {
                         H(Dropdown, {
                             options: imageOptions,
                             value: imageOptions[selectedImageIndex].value,
-                            onchange: (val: string) => {
+                            selectedLabel:
+                                imageOptions[selectedImageIndex].text,
+                            onchange: (val: string, selectedIdx: number) => {
                                 let clone = [...images];
                                 clone[0] = val;
-                                const selected = imageOptions
-                                    .map((o) => o.value)
-                                    .indexOf(val);
 
-                                if (val === NO_IMAGE) {
-                                    trackEvent('fields_selectNoImage');
+                                switch (val) {
+                                    case NO_IMAGE:
+                                        trackEvent('fields_selectNoImage');
+                                        break;
+                                    case 'SVGPorn':
+                                        trackEvent('fields_selectSVGPorn');
+                                        break;
+                                    case 'Custom Image':
+                                        trackEvent('fields_selectCustomImage');
+                                        break;
                                 }
 
                                 setLoadingState({
                                     images: clone,
-                                    selectedImageIndex: selected,
+                                    selectedImageIndex: selectedIdx,
                                 });
                             },
                         }),
@@ -631,6 +660,24 @@ const App = (_: any, state: AppState, setState: SetState) => {
                             style: {
                                 marginTop: '10px',
                                 display: isSvgPornSelected ? 'block' : 'none',
+                            },
+                            oninput: (val: string) => {
+                                let clone = [...images];
+                                clone[0] = val;
+                                setLoadingState({
+                                    images: clone,
+                                    overrideUrl: url,
+                                });
+                            },
+                        }),
+                        H(TextInput, {
+                            value: images[0],
+                            placeholder: 'Insert image url',
+                            style: {
+                                marginTop: '10px',
+                                display: isCustomImageSelected
+                                    ? 'block'
+                                    : 'none',
                             },
                             oninput: (val: string) => {
                                 let clone = [...images];
