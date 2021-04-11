@@ -302,7 +302,7 @@ const App = (_: any, state: AppState, setState: SetState) => {
     // Load state based on url
     if (!persistedState.mounted && window.location.pathname !== '/') {
         persistedState.mounted = true;
-        persistedState.text = decodeURI(window.location.pathname)
+        persistedState.text = decodeURIComponent(window.location.pathname)
             .replace('/', '')
             .replace(/(\.png|\.jpg)/, '');
 
