@@ -404,7 +404,7 @@ const App = (_: any, state: AppState, setState: SetState) => {
         let image = images[i];
         // Rewrite first image if "svgporn" is selected
         if (i === 0 && isSvgPornSelected && image) {
-            image = `svgporn/${image}`;
+            image = `svgporn/${image.toLowerCase()}`;
         }
         url.searchParams.append('images', image);
     }
