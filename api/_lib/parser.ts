@@ -1,9 +1,6 @@
 import { IncomingMessage } from 'http';
 import { parse } from 'url';
-import { ParsedRequest, Theme } from './types';
-
-// Determine if user wants no image
-const NO_IMAGE = 'NO_IMAGE';
+import { NO_IMAGE, ParsedRequest, Theme } from './types';
 
 const THEMES: { [key: string]: ParsedRequest['theme'] } = {
     light: 'light',

@@ -1,5 +1,6 @@
-import { ParsedRequest, Theme, FileType } from '../api/_lib/types';
-const { H, R, copee } = window as any;
+import { NO_IMAGE, ParsedRequest, Theme, FileType } from '../api/_lib/types';
+
+const { H, R, copee, fathom } = window as any;
 let timeout = -1;
 
 interface ImagePreviewProps {
@@ -200,7 +201,7 @@ const imageLightOptions: DropdownOption[] = [
         value:
             'https://assets.vercel.com/image/upload/front/assets/design/hyper-color-logo.svg',
     },
-    { text: 'No image', value: 'NO_IMAGE' },
+    { text: 'No image', value: NO_IMAGE },
 ];
 
 const imageDarkOptions: DropdownOption[] = [
@@ -219,7 +220,7 @@ const imageDarkOptions: DropdownOption[] = [
         value:
             'https://assets.vercel.com/image/upload/front/assets/design/hyper-bw-logo.svg',
     },
-    { text: 'No image', value: 'NO_IMAGE' },
+    { text: 'No image', value: NO_IMAGE },
 ];
 
 const widthOptions = [
