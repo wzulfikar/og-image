@@ -363,6 +363,7 @@ const App = (_: any, state: AppState, setState: SetState) => {
         ],
         widths = (persistedState.widths as string[]) || [],
         heights = (persistedState.heights as string[]) || [],
+        backgroundImage = (persistedState.backgroundImage as string) || null,
         showToast = false,
         messageToast = '',
         loading = true,
@@ -372,7 +373,6 @@ const App = (_: any, state: AppState, setState: SetState) => {
         customBackground = '#000',
         customForeground = '#fff',
         customRadial = 'dimgray',
-        backgroundImage = null,
     } = state;
 
     const mdValue = md ? '1' : '0';
