@@ -1,7 +1,9 @@
-import { ParsedRequest, Theme, FileType } from '../api/_lib/types';
+import { ParsedRequest, Template, Theme, FileType } from '../api/_lib/types';
 
 // TODO: fix non-types import so we can just import this from api/_lib/types
 const NO_IMAGE = 'NO_IMAGE';
+
+const DEFAULT_TEMPLATE = 'default';
 
 const { H, R, copee, fathom } = window as any;
 let timeout = -1;
@@ -171,14 +173,24 @@ const Button = ({
 interface FieldProps {
     label: string;
     input: any;
+    show?: boolean;
     style?: object;
     extendClass?: string;
 }
 
-const Field = ({ label, input, extendClass = '', style = {} }: FieldProps) => {
+const Field = ({
+    label,
+    input,
+    show = true,
+    extendClass = '',
+    style = {},
+}: FieldProps) => {
     return H(
         'div',
-        { className: `field ${extendClass}`, style },
+        {
+            className: `field ${extendClass}`,
+            style: { ...style, display: show ? 'block' : 'none' },
+        },
         H(
             'label',
             H('div', { className: 'field-label' }, label),
@@ -210,6 +222,11 @@ const Toast = ({ show, message }: ToastProps) => {
         )
     );
 };
+
+const templateOptions: DropdownOption[] = [
+    { text: 'Default', value: 'default' },
+    { text: 'Dev.to', value: 'devto' },
+];
 
 const themeOptions: DropdownOption[] = [
     { text: 'Light', value: 'light' },
@@ -310,42 +327,68 @@ interface AppState extends ParsedRequest {
     customForeground?: string;
     customRadial?: string;
     backgroundImage?: string;
+    authorImage?: string;
+    authorName?: string;
+    date?: string;
 }
 
 type SetState = (state: Partial<AppState>) => void;
 
 const imgPath = '/i/';
 
-let persistedState: any = { mounted: false, emptyText: false };
+let routeState: any = { mounted: false, emptyText: false };
 
-const App = (_: any, state: AppState, setState: SetState) => {
-    // Load state based on url
-    if (!persistedState.mounted && window.location.pathname !== '/') {
-        persistedState.mounted = true;
+/**
+ * @description
+ * Load state from url
+ *
+ * @param routeState
+ */
+function parseRouteState() {
+    // Do nothing if app is mounted or current route is root
+    if (routeState.mounted || window.location.pathname === '/') return;
 
-        const pathname = window.location.pathname;
-        persistedState.text = decodeURIComponent(pathname)
-            .replace('/', '')
-            .replace(/(\.png|\.jpg)/, '');
+    routeState.mounted = true;
 
-        if (
-            !persistedState.text &&
-            (pathname.endsWith('.png') || pathname.endsWith('.jpg'))
-        ) {
-            persistedState.emptyText = true;
-        }
+    const pathname = window.location.pathname;
+    routeState.text = decodeURIComponent(pathname)
+        .replace('/', '')
+        .replace(/(\.png|\.jpg)/, '');
 
-        const arrays = ['images', 'widths', 'heights'];
-        const params = new URLSearchParams(window.location.search);
-        params.forEach((v, k) => {
-            if (arrays.includes(k)) {
-                persistedState[k] = params.getAll(k);
-            } else {
-                persistedState[k] = v;
-            }
-        });
+    if (
+        !routeState.text &&
+        (pathname.endsWith('.png') || pathname.endsWith('.jpg'))
+    ) {
+        routeState.emptyText = true;
     }
 
+    const arrays = ['images', 'widths', 'heights'];
+
+    const params = new URLSearchParams(window.location.search);
+    params.forEach((v, k) => {
+        if (arrays.includes(k)) {
+            routeState[k] = params.getAll(k);
+        } else {
+            routeState[k] = v;
+        }
+    });
+
+    // Sync image 1 selection
+    if (routeState.images[0]) {
+        const selectedImageIndex = imageLightOptions
+            .map(({ value }) => value)
+            .indexOf(routeState.images[0]);
+
+        routeState.selectedImageIndex =
+            selectedImageIndex >= 0
+                ? selectedImageIndex
+                : imageLightOptions
+                      .map(({ text }) => text)
+                      .indexOf('Custom Image');
+    }
+}
+
+const App = (_: any, state: AppState, setState: SetState) => {
     const setLoadingState = (newState: Partial<AppState>) => {
         window.clearTimeout(timeout);
         if (state.overrideUrl && state.overrideUrl !== newState.overrideUrl) {
@@ -361,29 +404,33 @@ const App = (_: any, state: AppState, setState: SetState) => {
         setState({ ...newState, loading: true, stateChanged: true });
     };
 
+    parseRouteState();
+
     const {
-        fileType = persistedState.fileType || 'png',
-        fontSize = persistedState.fontSize || '100px',
-        theme = persistedState.theme || 'dark',
-        md = persistedState.md || true,
-        text = persistedState.emptyText
-            ? ''
-            : persistedState.text || '**Hello** World',
-        images = (persistedState.images as string[]) || [
-            imageDarkOptions[0].value,
-        ],
-        widths = (persistedState.widths as string[]) || [],
-        heights = (persistedState.heights as string[]) || [],
-        backgroundImage = (persistedState.backgroundImage as string) || null,
+        fileType = routeState.fileType || 'png',
+        fontSize = routeState.fontSize || '100px',
+        template = routeState.template || DEFAULT_TEMPLATE,
+        theme = routeState.theme || 'dark',
+        md = routeState.md || true,
+        text = routeState.emptyText ? '' : routeState.text || '**Hello** World',
+        images = (routeState.images as string[]) || [imageDarkOptions[0].value],
+        widths = (routeState.widths as string[]) || [],
+        heights = (routeState.heights as string[]) || [],
+        backgroundImage = (routeState.backgroundImage as string) || null,
+        selectedImageIndex = (routeState.selectedImageIndex as number) || 0,
         showToast = false,
         messageToast = '',
         loading = true,
-        selectedImageIndex = 0,
         overrideUrl = null,
         stateChanged = false,
         customBackground = '#000',
         customForeground = '#fff',
         customRadial = 'dimgray',
+
+        // Template props
+        authorImage = routeState.authorImage || '',
+        authorName = routeState.authorName || '',
+        date = routeState.date || '',
     } = state;
 
     const mdValue = md ? '1' : '0';
@@ -400,6 +447,10 @@ const App = (_: any, state: AppState, setState: SetState) => {
     url.searchParams.append('md', mdValue);
     url.searchParams.append('fontSize', fontSize);
 
+    if (template !== DEFAULT_TEMPLATE) {
+        url.searchParams.append('template', template);
+    }
+
     // Add custom theme properties
     if (theme === 'custom') {
         url.searchParams.append('customBackground', customBackground);
@@ -412,14 +463,25 @@ const App = (_: any, state: AppState, setState: SetState) => {
     }
 
     for (let i = 0; i < images.length; i++) {
-        let image = images[i];
-        url.searchParams.append('images', image);
+        url.searchParams.append('images', images[i]);
     }
     for (let width of widths) {
         url.searchParams.append('widths', width);
     }
     for (let height of heights) {
         url.searchParams.append('heights', height);
+    }
+
+    // Handle template props
+    const templateProps: any = {
+        authorImage: authorImage,
+        authorName: authorName,
+        date: date,
+    };
+    for (let prop in templateProps) {
+        if (templateProps[prop]) {
+            url.searchParams.append(prop, templateProps[prop]);
+        }
     }
 
     function copyImageUrl() {
@@ -505,10 +567,20 @@ const App = (_: any, state: AppState, setState: SetState) => {
             'div',
             {
                 className: 'pull-right',
-                style: { marginTop: '1rem', minWidth: '30%' },
+                style: { minWidth: '30%' },
             },
             H(
                 'div',
+                H(Field, {
+                    label: 'Template',
+                    input: H(Dropdown, {
+                        options: templateOptions,
+                        value: template,
+                        onchange: (val: Template) => {
+                            setLoadingState({ template: val });
+                        },
+                    }),
+                }),
                 H(Field, {
                     label: 'Theme',
                     input: H(Dropdown, {
@@ -537,8 +609,8 @@ const App = (_: any, state: AppState, setState: SetState) => {
                 H(Field, {
                     label: 'Background image',
                     extendClass: 'field-custom',
+                    show: theme === 'custom',
                     style: {
-                        display: theme === 'custom' ? 'block' : 'none',
                         borderTopRightRadius: '10px',
                     },
                     input: H(TextInput, {
@@ -553,9 +625,7 @@ const App = (_: any, state: AppState, setState: SetState) => {
                 H(Field, {
                     label: 'Custom Background',
                     extendClass: 'field-custom',
-                    style: {
-                        display: theme === 'custom' ? 'block' : 'none',
-                    },
+                    show: theme === 'custom',
                     input: H(TextInput, {
                         type: 'color',
                         value: customBackground,
@@ -567,9 +637,7 @@ const App = (_: any, state: AppState, setState: SetState) => {
                 H(Field, {
                     label: 'Custom Radial',
                     extendClass: 'field-custom',
-                    style: {
-                        display: theme === 'custom' ? 'block' : 'none',
-                    },
+                    show: theme === 'custom',
                     input: H(TextInput, {
                         type: 'color',
                         value: customRadial,
@@ -581,8 +649,8 @@ const App = (_: any, state: AppState, setState: SetState) => {
                 H(Field, {
                     label: 'Font Color',
                     extendClass: 'field-custom',
+                    show: theme === 'custom',
                     style: {
-                        display: theme === 'custom' ? 'block' : 'none',
                         borderBottomRightRadius: '10px',
                     },
                     input: H(TextInput, {
@@ -627,6 +695,45 @@ const App = (_: any, state: AppState, setState: SetState) => {
                         oninput: (val: string) => {
                             console.log('oninput ' + val);
                             setLoadingState({ text: val, overrideUrl: url });
+                        },
+                    }),
+                }),
+                H(Field, {
+                    label: 'Author Image',
+                    show: template === 'devto',
+                    input: H(TextInput, {
+                        value: authorImage,
+                        placeholder: 'Insert avatar url',
+                        oninput: (val: string) => {
+                            setLoadingState({
+                                authorImage: val,
+                                overrideUrl: url,
+                            });
+                        },
+                    }),
+                }),
+                H(Field, {
+                    label: 'Author Name',
+                    show: template === 'devto',
+                    input: H(TextInput, {
+                        value: authorName,
+                        placeholder: 'John Doe',
+                        oninput: (val: string) => {
+                            setLoadingState({
+                                authorName: val,
+                                overrideUrl: url,
+                            });
+                        },
+                    }),
+                }),
+                H(Field, {
+                    label: 'Date',
+                    show: template === 'devto',
+                    input: H(TextInput, {
+                        value: date,
+                        placeholder: 'Feb 29',
+                        oninput: (val: string) => {
+                            setLoadingState({ date: val, overrideUrl: url });
                         },
                     }),
                 }),

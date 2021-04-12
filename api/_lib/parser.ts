@@ -1,5 +1,7 @@
 import { IncomingMessage } from 'http';
 import { parse } from 'url';
+
+import resolveImage from './resolveImage';
 import { NO_IMAGE, ParsedRequest, Theme } from './types';
 
 const THEMES: { [key: string]: ParsedRequest['theme'] } = {
@@ -36,8 +38,6 @@ export function parseRequest(req: IncomingMessage) {
         throw new Error('Expected a single theme');
     }
 
-    const template = (query.template as string)?.trim() || DEFAULT_TEMPLATE;
-
     // Remove image path from raw path
     const pathname = rawPathname?.replace('/i/', '/');
 
@@ -51,6 +51,16 @@ export function parseRequest(req: IncomingMessage) {
     } else {
         extension = arr.pop() as string;
         text = arr.join('.');
+    }
+
+    const template = (query.template as string)?.trim() || DEFAULT_TEMPLATE;
+
+    // Template props
+    let { authorImage, authorName, date } = query;
+
+    // Resolve author image
+    if (authorImage) {
+        authorImage = resolveImage(authorImage as string);
     }
 
     const parsedRequest: ParsedRequest = {
@@ -67,6 +77,11 @@ export function parseRequest(req: IncomingMessage) {
         customForeground: customForeground as string | undefined,
         customRadial: customRadial as string | undefined,
         backgroundImage: backgroundImage as string | undefined,
+
+        // Template props
+        authorImage: authorImage as string,
+        authorName: authorName as string,
+        date: date as string,
     };
     parsedRequest.images = getDefaultImages(
         parsedRequest.images,
@@ -101,13 +116,8 @@ function getDefaultImages(images: string[], theme: Theme): string[] {
         return [defaultImage];
     }
 
-    // Resolve svgporn images to the actual url
-    const svgpornBaseUrl = 'https://cdn.svgporn.com/logos';
     images.forEach((image, i) => {
-        if (image.startsWith('svgporn/')) {
-            const logo = image.replace('svgporn/', '');
-            images[i] = `${svgpornBaseUrl}/${logo}.svg`;
-        }
+        images[i] = resolveImage(image);
     });
 
     return images;
