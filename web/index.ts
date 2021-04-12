@@ -402,10 +402,6 @@ const App = (_: any, state: AppState, setState: SetState) => {
 
     for (let i = 0; i < images.length; i++) {
         let image = images[i];
-        // Rewrite first image if "svgporn" is selected
-        if (i === 0 && isSvgPornSelected && image) {
-            image = `svgporn/${image.toLowerCase()}`;
-        }
         url.searchParams.append('images', image);
     }
     for (let width of widths) {
@@ -656,7 +652,7 @@ const App = (_: any, state: AppState, setState: SetState) => {
                         }),
                         H(TextInput, {
                             value: images[0],
-                            placeholder: 'github-octocat',
+                            placeholder: 'svgporn/github-octocat',
                             style: {
                                 marginTop: '10px',
                                 display: isSvgPornSelected ? 'block' : 'none',
