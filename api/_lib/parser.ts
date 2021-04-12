@@ -9,6 +9,8 @@ const THEMES: { [key: string]: ParsedRequest['theme'] } = {
     custom: 'custom',
 };
 
+const DEFAULT_TEMPLATE = 'default';
+
 const DEFAULT_THEME: ParsedRequest['theme'] = 'dark';
 
 export function parseRequest(req: IncomingMessage) {
@@ -34,6 +36,8 @@ export function parseRequest(req: IncomingMessage) {
         throw new Error('Expected a single theme');
     }
 
+    const template = (query.template as string)?.trim() || DEFAULT_TEMPLATE;
+
     // Remove image path from raw path
     const pathname = rawPathname?.replace('/i/', '/');
 
@@ -52,6 +56,7 @@ export function parseRequest(req: IncomingMessage) {
     const parsedRequest: ParsedRequest = {
         fileType: extension === 'jpeg' ? extension : 'png',
         text: decodeURIComponent(text),
+        template: template as string,
         theme: THEMES[theme] || DEFAULT_THEME, // Fallback to default theme if theme is invalid
         md: md === '1' || md === 'true',
         fontSize: fontSize || '96px',

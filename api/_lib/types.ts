@@ -7,6 +7,7 @@ export const NO_IMAGE = 'NO_IMAGE';
 export interface ParsedRequest {
     fileType: FileType;
     text: string;
+    template: string;
     theme: Theme;
     md: boolean;
     fontSize: string;
