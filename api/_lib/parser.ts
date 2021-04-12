@@ -9,7 +9,7 @@ const THEMES: { [key: string]: ParsedRequest['theme'] } = {
     custom: 'custom',
 };
 
-const DEFAULT_THEME: ParsedRequest['theme'] = 'light';
+const DEFAULT_THEME: ParsedRequest['theme'] = 'dimmed';
 
 export function parseRequest(req: IncomingMessage) {
     console.log('HTTP ' + req.url);
