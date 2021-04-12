@@ -316,15 +316,21 @@ type SetState = (state: Partial<AppState>) => void;
 
 const imgPath = '/i/';
 
-let persistedState: any = { mounted: false };
+let persistedState: any = { mounted: false, emptyText: false };
 
 const App = (_: any, state: AppState, setState: SetState) => {
     // Load state based on url
     if (!persistedState.mounted && window.location.pathname !== '/') {
         persistedState.mounted = true;
-        persistedState.text = decodeURIComponent(window.location.pathname)
+
+        const pathname = window.location.pathname;
+        persistedState.text = decodeURIComponent(pathname)
             .replace('/', '')
             .replace(/(\.png|\.jpg)/, '');
+
+        if (pathname.endsWith('.png') || pathname.endsWith('.jpg')) {
+            persistedState.emptyText = true;
+        }
 
         const arrays = ['images', 'widths', 'heights'];
         const params = new URLSearchParams(window.location.search);
@@ -357,7 +363,9 @@ const App = (_: any, state: AppState, setState: SetState) => {
         fontSize = persistedState.fontSize || '100px',
         theme = persistedState.theme || 'dark',
         md = persistedState.md || true,
-        text = persistedState.text || '**Hello** World',
+        text = persistedState.emptyText
+            ? ''
+            : persistedState.text || '**Hello** World',
         images = (persistedState.images as string[]) || [
             imageDarkOptions[0].value,
         ],
