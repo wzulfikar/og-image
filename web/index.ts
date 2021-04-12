@@ -355,7 +355,7 @@ const App = (_: any, state: AppState, setState: SetState) => {
     const {
         fileType = persistedState.fileType || 'png',
         fontSize = persistedState.fontSize || '100px',
-        theme = persistedState.theme || 'dimmed',
+        theme = persistedState.theme || 'dark',
         md = persistedState.md || true,
         text = persistedState.text || '**Hello** World',
         images = (persistedState.images as string[]) || [
