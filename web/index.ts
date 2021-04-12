@@ -328,7 +328,10 @@ const App = (_: any, state: AppState, setState: SetState) => {
             .replace('/', '')
             .replace(/(\.png|\.jpg)/, '');
 
-        if (pathname.endsWith('.png') || pathname.endsWith('.jpg')) {
+        if (
+            !persistedState.text &&
+            (pathname.endsWith('.png') || pathname.endsWith('.jpg'))
+        ) {
             persistedState.emptyText = true;
         }
 
