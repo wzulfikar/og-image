@@ -433,7 +433,8 @@ const App = (_: any, state: AppState, setState: SetState) => {
     }
 
     // Create preview url
-    const previewUrl = url.href.replace(imgPath, '/');
+    const previewUrl =
+        encodeURIComponent(url.pathname.replace(imgPath, '')) + url.search;
 
     // Update url state (this adds new entry in browser history)
     function updateUrl() {
