@@ -444,8 +444,7 @@ const App = (_: any, state: AppState, setState: SetState) => {
     }
 
     // Create preview url
-    const previewUrl =
-        encodeURIComponent(url.pathname.replace(imgPath, '')) + url.search;
+    const previewUrl = `${encodeURIComponent(text)}.${fileType}${url.search}`;
 
     // Update url state (this adds new entry in browser history)
     function updateUrl() {
