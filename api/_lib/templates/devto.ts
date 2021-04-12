@@ -31,10 +31,8 @@ export function getHtml(parsedReq: ParsedRequest) {
         authorImage = `https://ui-avatars.com/api/?name=${authorName}&format=svg`;
     }
 
-    // Use subsequent images as footer logo
-    const footerLogo = images
-        .slice(1)
-        .map((img, i) => getImage(img, widths[i + 1], heights[i + 1]))
+    const footerImages = images
+        .map((img, i) => getImage(img, widths[i], heights[i]))
         .join('');
 
     return `<!DOCTYPE html>
@@ -137,7 +135,7 @@ export function getHtml(parsedReq: ParsedRequest) {
                     ${date ? `&nbsp;·&nbsp;<div>${date}</div>` : ''}
                 </div>
                 <div class="images">
-                ${footerLogo}
+                ${footerImages}
                 </div>
             </div>
             <div class="container-shadow"></div>
