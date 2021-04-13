@@ -28,7 +28,6 @@ export async function parseRequest(req: IncomingMessage) {
         customBackground,
         customForeground,
         customRadial,
-        backgroundImage,
     } = query || {};
 
     if (Array.isArray(fontSize)) {
@@ -51,6 +50,12 @@ export async function parseRequest(req: IncomingMessage) {
     } else {
         extension = arr.pop() as string;
         text = arr.join('.');
+    }
+
+    // Resolve background image
+    let { backgroundImage } = query;
+    if (backgroundImage) {
+        backgroundImage = await resolveImage(backgroundImage as string);
     }
 
     const template = (query.template as string)?.trim() || DEFAULT_TEMPLATE;

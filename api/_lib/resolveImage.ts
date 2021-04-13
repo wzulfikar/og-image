@@ -1,3 +1,7 @@
+// Url to current deployment
+const localProtocol = process.env.NODE_ENV === 'production' ? 'https' : 'http';
+const localUrl = `${localProtocol}://${process.env.VERCEL_URL}`;
+
 // Mapping of prefix and image resolver.
 // Resolver can be plain string template or async function.
 const rules = [
@@ -13,7 +17,19 @@ const rules = [
     ['randomuser/men/', `https://randomuser.me/portraits/men/{img}.jpg`],
     ['randomuser/women/', `https://randomuser.me/portraits/women/{img}.jpg`],
     ['randomuser/lego/', `https://randomuser.me/portraits/lego/{img}.jpg`],
+
+    // Resolve webshot
+    ['webshot/', resolveWebshot],
 ];
+
+function resolveWebshot(img: string) {
+    try {
+        new URL(img);
+        return `${localUrl}/i/${encodeURIComponent(img)}.png?template=webshot`;
+    } catch (e) {
+        return '';
+    }
+}
 
 export default async function resolveImage(image: string): Promise<string> {
     // Return early if image is absolute url
@@ -24,7 +40,12 @@ export default async function resolveImage(image: string): Promise<string> {
         if (image.startsWith(prefix as string)) {
             const img = image.replace(prefix as string, '');
             if (typeof target === 'string') {
-                return (target as string).replace('{img}', img);
+                return (target as string).replace(
+                    '{img}',
+                    encodeURIComponent(img)
+                );
+            } else {
+                return await target(img);
             }
         }
     }

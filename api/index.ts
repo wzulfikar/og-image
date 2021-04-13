@@ -27,9 +27,16 @@ export default async function handler(
         const { template, fileType } = parsedReq;
 
         // Handle web screenshot
-        if (template === 'webscreenshot') {
+        if (template === 'webshot') {
             // Do nothing if `text` is non url
-            if (!parsedReq.text.startsWith('http')) return;
+            if (!parsedReq.text.startsWith('http')) {
+                res.statusCode = 404;
+                res.setHeader('Content-Type', 'text/html');
+                res.end('Not found');
+                return;
+            }
+
+            console.log('[INFO] webshot:', parsedReq.text);
 
             const file = await getWebScreenshot(
                 parsedReq.text,

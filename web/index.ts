@@ -229,7 +229,7 @@ const templateOptions: DropdownOption[] = [
 ];
 
 const hiddenTemplateOptions: DropdownOption[] = [
-    { text: 'Web Screenshot', value: 'webscreenshot' },
+    { text: 'Web Screenshot', value: 'webshot' },
 ];
 
 const themeOptions: DropdownOption[] = [
@@ -403,6 +403,13 @@ function parseRouteState() {
     }
 }
 
+function isValidBackgroundImage(backgroundImage?: string) {
+    return (
+        backgroundImage?.startsWith('http') ||
+        backgroundImage?.startsWith('webshot/http')
+    );
+}
+
 const App = (_: any, state: AppState, setState: SetState) => {
     const setLoadingState = (newState: Partial<AppState>) => {
         window.clearTimeout(timeout);
@@ -471,7 +478,7 @@ const App = (_: any, state: AppState, setState: SetState) => {
         url.searchParams.append('customBackground', customBackground);
         url.searchParams.append('customForeground', customForeground);
         url.searchParams.append('customRadial', customRadial);
-        if (backgroundImage?.startsWith('http')) {
+        if (isValidBackgroundImage(backgroundImage)) {
             url.searchParams.append('backgroundImage', backgroundImage);
             trackEvent('fields_insertBackgroundImage');
         }
@@ -598,6 +605,7 @@ const App = (_: any, state: AppState, setState: SetState) => {
                 }),
                 H(Field, {
                     label: 'Theme',
+                    show: template !== 'webshot',
                     input: H(Dropdown, {
                         options: themeOptions,
                         value: theme,
@@ -704,9 +712,13 @@ const App = (_: any, state: AppState, setState: SetState) => {
                     }),
                 }),
                 H(Field, {
-                    label: 'Text Input',
+                    label: template === 'webshot' ? 'Webpage' : 'Text Input',
                     input: H(TextInput, {
                         value: text,
+                        placeholder:
+                            template === 'webshot'
+                                ? 'http://example.com'
+                                : 'Insert text',
                         oninput: (val: string) => {
                             console.log('oninput ' + val);
 
