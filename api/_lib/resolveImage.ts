@@ -1,6 +1,7 @@
 // Mapping of prefix and url template
 const rules = [
     ['svgporn/', `https://cdn.svgporn.com/logos/{img}.svg`],
+    ['github/', `https://github.com/{img}.png`],
 ];
 
 export default function resolveImage(image: string): string {
