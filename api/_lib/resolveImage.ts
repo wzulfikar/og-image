@@ -8,6 +8,11 @@ const rules = [
     // Resolve github from github
     ['github/', `https://github.com/{img}.png`],
     ['gh/', `https://github.com/{img}.png`],
+
+    // Resolve random user
+    ['randomuser/men/', `https://randomuser.me/portraits/men/{img}.jpg`],
+    ['randomuser/women/', `https://randomuser.me/portraits/women/{img}.jpg`],
+    ['randomuser/lego/', `https://randomuser.me/portraits/lego/{img}.jpg`],
 ];
 
 export default async function resolveImage(image: string): Promise<string> {
