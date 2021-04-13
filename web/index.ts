@@ -416,16 +416,16 @@ const App = (_: any, state: AppState, setState: SetState) => {
         images = (routeState.images as string[]) || [imageDarkOptions[0].value],
         widths = (routeState.widths as string[]) || [],
         heights = (routeState.heights as string[]) || [],
-        backgroundImage = (routeState.backgroundImage as string) || null,
         selectedImageIndex = (routeState.selectedImageIndex as number) || 0,
+        backgroundImage = routeState.backgroundImage || null,
+        customBackground = routeState.customBackground || '#000',
+        customForeground = routeState.customForeground || '#fff',
+        customRadial = routeState.customRadial || 'dimgray',
         showToast = false,
         messageToast = '',
         loading = true,
         overrideUrl = null,
         stateChanged = false,
-        customBackground = '#000',
-        customForeground = '#fff',
-        customRadial = 'dimgray',
 
         // Template props
         authorImage = routeState.authorImage || '',
@@ -694,6 +694,10 @@ const App = (_: any, state: AppState, setState: SetState) => {
                         value: text,
                         oninput: (val: string) => {
                             console.log('oninput ' + val);
+
+                            // Format val for uri compat
+                            val = val.replace(/’/g, "'");
+
                             setLoadingState({ text: val, overrideUrl: url });
                         },
                     }),

@@ -93,6 +93,10 @@ export function parseRequest(req: IncomingMessage) {
         parsedRequest.images = parsedRequest.images.slice(1);
     }
 
+    if (process.env.NODE_ENV === 'development') {
+        console.debug('[DEBUG] parsedRequest:', parsedRequest);
+    }
+
     return parsedRequest;
 }
 
