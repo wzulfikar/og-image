@@ -228,6 +228,10 @@ const templateOptions: DropdownOption[] = [
     { text: 'Dev.to', value: 'devto' },
 ];
 
+const hiddenTemplateOptions: DropdownOption[] = [
+    { text: 'Web Screenshot', value: 'webscreenshot' },
+];
+
 const themeOptions: DropdownOption[] = [
     { text: 'Light', value: 'light' },
     { text: 'Dark', value: 'dark' },
@@ -327,6 +331,8 @@ interface AppState extends ParsedRequest {
     customForeground?: string;
     customRadial?: string;
     backgroundImage?: string;
+
+    // Template state: dev.to
     authorImage?: string;
     authorName?: string;
     date?: string;
@@ -374,7 +380,7 @@ function parseRouteState() {
     });
 
     // Sync image 1 selection
-    if (routeState.images[0]) {
+    if (routeState.images?.[0]) {
         const selectedImageIndex = imageLightOptions
             .map(({ value }) => value)
             .indexOf(routeState.images[0]);
@@ -385,6 +391,15 @@ function parseRouteState() {
                 : imageLightOptions
                       .map(({ text }) => text)
                       .indexOf('Custom Image');
+    }
+
+    // Show hidden template if it exists in route state
+    if (routeState.template) {
+        hiddenTemplateOptions.forEach((template) => {
+            if (routeState.template === template.value) {
+                templateOptions.push(template);
+            }
+        });
     }
 }
 

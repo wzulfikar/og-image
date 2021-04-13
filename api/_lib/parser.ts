@@ -78,7 +78,7 @@ export async function parseRequest(req: IncomingMessage) {
         customRadial: customRadial as string | undefined,
         backgroundImage: backgroundImage as string | undefined,
 
-        // Template props
+        // Template props: devto
         authorImage: authorImage as string,
         authorName: authorName as string,
         date: date as string,
