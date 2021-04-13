@@ -15,7 +15,7 @@ const DEFAULT_TEMPLATE = 'default';
 
 const DEFAULT_THEME: ParsedRequest['theme'] = 'dark';
 
-export function parseRequest(req: IncomingMessage) {
+export async function parseRequest(req: IncomingMessage) {
     console.log('HTTP ' + req.url);
     const { pathname: rawPathname, query } = parse(req.url || '/', true);
     const {
@@ -60,7 +60,7 @@ export function parseRequest(req: IncomingMessage) {
 
     // Resolve author image
     if (authorImage) {
-        authorImage = resolveImage(authorImage as string);
+        authorImage = await resolveImage(authorImage as string);
     }
 
     const parsedRequest: ParsedRequest = {
@@ -83,7 +83,8 @@ export function parseRequest(req: IncomingMessage) {
         authorName: authorName as string,
         date: date as string,
     };
-    parsedRequest.images = getDefaultImages(
+
+    parsedRequest.images = await getDefaultImages(
         parsedRequest.images,
         parsedRequest.theme
     );
@@ -110,7 +111,10 @@ function getArray(stringOrArray: string[] | string | undefined): string[] {
     }
 }
 
-function getDefaultImages(images: string[], theme: Theme): string[] {
+async function getDefaultImages(
+    images: string[],
+    theme: Theme
+): Promise<string[]> {
     const defaultImage =
         theme === 'light'
             ? 'https://assets.vercel.com/image/upload/front/assets/design/vercel-triangle-black.svg'
@@ -120,9 +124,11 @@ function getDefaultImages(images: string[], theme: Theme): string[] {
         return [defaultImage];
     }
 
-    images.forEach((image, i) => {
-        images[i] = resolveImage(image);
-    });
+    await Promise.all(
+        images.map(async (image, i) => {
+            images[i] = await resolveImage(image);
+        })
+    );
 
     return images;
 }

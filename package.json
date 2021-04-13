@@ -15,6 +15,7 @@
   },
   "devDependencies": {
     "@types/marked": "1.2.2",
+    "@types/node-fetch": "2.5.10",
     "@types/puppeteer": "5.4.3",
     "@types/puppeteer-core": "5.4.0",
     "prettier": "2.2.1",

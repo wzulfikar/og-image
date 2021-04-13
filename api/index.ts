@@ -11,7 +11,7 @@ export default async function handler(
     res: ServerResponse
 ) {
     try {
-        const parsedReq = parseRequest(req);
+        const parsedReq = await parseRequest(req);
 
         const getHtml = templates[parsedReq.template];
 

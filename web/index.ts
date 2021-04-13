@@ -597,7 +597,7 @@ const App = (_: any, state: AppState, setState: SetState) => {
                                 trackEvent('fields_selectCustomTheme');
                             }
 
-                            // Reset first image to default value if svgporn/custom image are not selected
+                            // Reset first image to default value if svg/custom image are not selected
                             if (!isSvgPornSelected && !isCustomImageSelected) {
                                 clone[0] = options[selectedImageIndex].value;
                             }
@@ -774,7 +774,7 @@ const App = (_: any, state: AppState, setState: SetState) => {
                         }),
                         H(TextInput, {
                             value: images[0],
-                            placeholder: 'svgporn/github-octocat',
+                            placeholder: 'svg/github-octocat',
                             style: {
                                 marginTop: '10px',
                                 display: isSvgPornSelected ? 'block' : 'none',
