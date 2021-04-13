@@ -7,17 +7,20 @@ const twemoji = require('twemoji');
 const twOptions = { folder: 'svg', ext: '.svg' };
 const emojify = (text: string) => twemoji.parse(text, twOptions);
 
+const DEFAULT_FONT_SIZE = '150px';
+const DEFAULT_FOREGROUND = 'black';
+
 export function getHtml(parsedReq: ParsedRequest) {
     const {
         text,
         theme,
         md,
-        fontSize,
+        fontSize = DEFAULT_FONT_SIZE,
         images,
         widths,
         heights,
         customBackground,
-        customForeground,
+        customForeground = DEFAULT_FOREGROUND,
         customRadial,
         backgroundImage,
         authorName = 'John Doe',
@@ -73,12 +76,11 @@ export function getHtml(parsedReq: ParsedRequest) {
             border-top-right-radius: 1rem;
         }
         .title {
-            font-family: 'Inter';
             text-align: left;
             padding-top: 4rem;
             padding-left: 4rem;
             padding-right: 4rem;
-            font-size: 150px;
+            color: ${customForeground};
         }
         .title p {
             margin-top: 1rem;
@@ -125,7 +127,7 @@ export function getHtml(parsedReq: ParsedRequest) {
     </style>
     <body>
         <div class="container">
-            <div class="title">${emojify(
+            <div class="heading title">${emojify(
                 md ? marked(text) : sanitizeHtml(text)
             )}</div>
             <div class="footer">
