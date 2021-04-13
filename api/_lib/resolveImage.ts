@@ -1,4 +1,5 @@
 import fetch from 'node-fetch';
+import UserAgent from 'user-agents';
 
 // Mapping of prefix and image resolver.
 // Resolver can be plain string template or async function.
@@ -19,8 +20,12 @@ const rules = [
 async function resolveInstagram(img: string): Promise<string | null> {
     const endpoint = `https://www.instagram.com/${img}/?__a=1`;
 
+    // Mock browser user agent to avoid login
+    const userAgent = new UserAgent();
+
     const { data, error } = await fetch(endpoint, {
         headers: {
+            'User-Agent': userAgent.toString(),
             'Content-Type': 'application/json',
         },
     })
