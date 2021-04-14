@@ -1,6 +1,7 @@
 {
     "rewrites": [
         { "source": "/i/(.+)", "destination": "/api" },
+        { "source": "/r/(.+)", "destination": "/api/resolveImage" },
         { "source": "/(.+)", "destination": "/" }
     ]
 }
