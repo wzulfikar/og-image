@@ -23,7 +23,8 @@ export function getCss(
     customBackground?: string,
     customForeground?: string,
     customRadial?: string,
-    customBackgroundImage?: string
+    customBackgroundImage?: string,
+    withRadial: boolean = true
 ) {
     let radial = 'lightgray';
     let background = 'white';
@@ -51,6 +52,11 @@ export function getCss(
                 : defaultBackgroundImage(radial)) as string;
             foreground = customForeground as string;
             break;
+    }
+
+    // Cancel radial if asked
+    if (withRadial === false && backgroundImage.startsWith('radial-gradient')) {
+        backgroundImage = 'none';
     }
 
     return `
