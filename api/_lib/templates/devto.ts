@@ -57,6 +57,7 @@ export function getHtml(parsedReq: ParsedRequest) {
             height: 80%;
             background: white;
             margin: 2rem 2rem;
+            margin-bottom: 3rem;
             border-radius: 2rem 2rem 0 0;
             border: 4px solid black;
             border-bottom: 10px solid black;
@@ -70,7 +71,7 @@ export function getHtml(parsedReq: ParsedRequest) {
             opacity: 0.85;
             width: 84%;
             height: 80%;
-            top: 145px;
+            top: 140px;
             margin-left: 23px;
             z-index: -1;
             border-top-right-radius: 1rem;
