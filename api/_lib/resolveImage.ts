@@ -2,6 +2,8 @@
 const localProtocol = process.env.NODE_ENV === 'production' ? 'https' : 'http';
 const localUrl = `${localProtocol}://${process.env.VERCEL_URL}`;
 
+const unavatarBaseUrl = 'https://unavatar.vercel.app';
+
 // Mapping of prefix and image resolver.
 // Resolver can be plain string template or async function.
 const rules = [
@@ -20,6 +22,25 @@ const rules = [
 
     // Resolve webshot
     ['webshot/', resolveWebshot],
+
+    // Resolve providers using unavatar (https://unavatar.vercel.app).
+    // Some providers no longer support public api. We only resolve
+    // providers that still support it.
+    ['clearbit/', `${unavatarBaseUrl}/clearbit/{img}`],
+    ['deviantart/', `${unavatarBaseUrl}/deviantart/{img}`],
+    ['dribbble/', `${unavatarBaseUrl}/dribbble/{img}`],
+    ['duckduckgo/', `${unavatarBaseUrl}/duckduckgo/{img}`],
+    ['facebook/', `${unavatarBaseUrl}/facebook/{img}`],
+    ['fb/', `${unavatarBaseUrl}/facebook/{img}`],
+    ['gravatar/', `${unavatarBaseUrl}/gravatar/{img}`],
+    ['reddit/', `${unavatarBaseUrl}/reddit/{img}`],
+    ['soundcloud/', `${unavatarBaseUrl}/soundcloud/{img}`],
+    ['substack/', `${unavatarBaseUrl}/substack/{img}`],
+    ['telegram/', `${unavatarBaseUrl}/telegram/{img}`],
+    ['tg/', `${unavatarBaseUrl}/telegram/{img}`],
+
+    // For those who like it verbose, use "unavatar/reddit/{somename}"
+    ['unavatar/', `${unavatarBaseUrl}/{img_raw}`],
 ];
 
 function resolveWebshot(img: string) {
@@ -40,10 +61,9 @@ export default async function resolveImage(image: string): Promise<string> {
         if (image.startsWith(prefix as string)) {
             const img = image.replace(prefix as string, '');
             if (typeof target === 'string') {
-                return (target as string).replace(
-                    '{img}',
-                    encodeURIComponent(img)
-                );
+                return (target as string)
+                    .replace('{img_raw}', decodeURIComponent(img))
+                    .replace('{img}', encodeURIComponent(img));
             } else {
                 return await target(img);
             }
