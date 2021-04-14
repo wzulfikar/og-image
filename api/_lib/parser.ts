@@ -125,8 +125,9 @@ async function getDefaultImages(
             ? 'https://assets.vercel.com/image/upload/front/assets/design/vercel-triangle-black.svg'
             : 'https://assets.vercel.com/image/upload/front/assets/design/vercel-triangle-white.svg';
 
-    if (!images || !images[0]) {
-        return [defaultImage];
+    // Use default image for first image
+    if (!images[0]) {
+        images[0] = defaultImage;
     }
 
     await Promise.all(
