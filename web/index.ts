@@ -270,7 +270,7 @@ const imageLightOptions: DropdownOption[] = [
         value:
             'https://assets.vercel.com/image/upload/front/assets/design/hyper-color-logo.svg',
     },
-    { text: 'SVGPorn', value: '' },
+    { text: 'SVG', value: '' },
     { text: 'Custom Image', value: '' },
     { text: 'No image', value: NO_IMAGE },
 ];
@@ -291,7 +291,7 @@ const imageDarkOptions: DropdownOption[] = [
         value:
             'https://assets.vercel.com/image/upload/front/assets/design/hyper-bw-logo.svg',
     },
-    { text: 'SVGPorn', value: '' },
+    { text: 'SVG', value: '' },
     { text: 'Custom Image', value: '' },
     { text: 'No image', value: NO_IMAGE },
 ];
@@ -459,7 +459,7 @@ const App = (_: any, state: AppState, setState: SetState) => {
     const imageOptions =
         theme === 'light' ? imageLightOptions : imageDarkOptions;
     const isSvgPornSelected =
-        imageOptions[selectedImageIndex].text === 'SVGPorn';
+        imageOptions[selectedImageIndex].text === 'SVG';
     const isCustomImageSelected =
         imageOptions[selectedImageIndex].text === 'Custom Image';
 
@@ -785,7 +785,7 @@ const App = (_: any, state: AppState, setState: SetState) => {
                                     case NO_IMAGE:
                                         trackEvent('fields_selectNoImage');
                                         break;
-                                    case 'SVGPorn':
+                                    case 'SVG':
                                         trackEvent('fields_selectSVGPorn');
                                         break;
                                     case 'Custom Image':
