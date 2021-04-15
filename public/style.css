@@ -134,7 +134,7 @@ button:hover {
     font-size: 14px;
     line-height: 27px;
     outline: 0;
-    width: 100%;
+    width: 90%;
 }
 
 .select-wrapper {
@@ -343,8 +343,21 @@ img {
     font-size: 0.8rem;
 }
 
+.footer {
+    display: grid;
+    grid-auto-flow: column;
+    grid-template-columns: 2fr 1fr;
+    margin: 2rem 1rem;
+}
+
+.footer-actions {
+    display: grid;
+    place-content: center;
+    margin: 2rem 0px;
+}
+
 div.what-is-this {
-    margin-top: 2rem;
+    text-align: left;
 }
 
 .what-is-this p,
@@ -355,7 +368,6 @@ div.what-is-this {
 
 .what-is-this p {
     color: #424242;
-    padding: 0 0.5rem;
 }
 
 .protip {
@@ -394,6 +406,9 @@ div.what-is-this {
     .image-preview-container .image-preview-actions .btn-cta:nth-child(2) {
         margin-left: 0px !important;
         margin-top: 4px;
+    }
+    .footer {
+        display: block;
     }
 }
 
