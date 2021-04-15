@@ -225,6 +225,7 @@ const Toast = ({ show, message }: ToastProps) => {
 
 const templateOptions: DropdownOption[] = [
     { text: 'Default', value: 'default' },
+    { text: 'Article', value: 'article' },
     { text: 'Dev.to', value: 'devto' },
 ];
 
@@ -305,6 +306,7 @@ const widthOptions = [
     { text: '250', value: '250' },
     { text: '300', value: '300' },
     { text: '350', value: '350' },
+    { text: '100%', value: '100%' },
 ];
 
 const heightOptions = [
@@ -316,6 +318,7 @@ const heightOptions = [
     { text: '250', value: '250' },
     { text: '300', value: '300' },
     { text: '350', value: '350' },
+    { text: '100%', value: '100%' },
 ];
 
 interface AppState extends ParsedRequest {
@@ -336,6 +339,10 @@ interface AppState extends ParsedRequest {
     authorImage?: string;
     authorName?: string;
     date?: string;
+
+    // Template state: article
+    subheader?: string;
+    subheaderColor?: string;
 }
 
 type SetState = (state: Partial<AppState>) => void;
@@ -453,13 +460,14 @@ const App = (_: any, state: AppState, setState: SetState) => {
         authorImage = routeState.authorImage || '',
         authorName = routeState.authorName || '',
         date = routeState.date || '',
+        subheader = routeState.subheader || '',
+        subheaderColor = routeState.subheaderColor || '',
     } = state;
 
     const mdValue = md ? '1' : '0';
     const imageOptions =
         theme === 'light' ? imageLightOptions : imageDarkOptions;
-    const isSvgPornSelected =
-        imageOptions[selectedImageIndex].text === 'SVG';
+    const isSvgPornSelected = imageOptions[selectedImageIndex].text === 'SVG';
     const isCustomImageSelected =
         imageOptions[selectedImageIndex].text === 'Custom Image';
 
@@ -499,6 +507,8 @@ const App = (_: any, state: AppState, setState: SetState) => {
         authorImage: authorImage,
         authorName: authorName,
         date: date,
+        subheader: subheader,
+        subheaderColor: subheaderColor,
     };
     for (let prop in templateProps) {
         if (templateProps[prop]) {
@@ -631,8 +641,8 @@ const App = (_: any, state: AppState, setState: SetState) => {
                 }),
                 H(Field, {
                     label: 'Background image',
-                    extendClass: 'field-custom',
                     show: theme === 'custom',
+                    extendClass: 'field-custom',
                     style: {
                         borderTopRightRadius: '10px',
                     },
@@ -709,6 +719,44 @@ const App = (_: any, state: AppState, setState: SetState) => {
                         value: mdValue,
                         onchange: (val: string) =>
                             setLoadingState({ md: val === '1' }),
+                    }),
+                }),
+                H(Field, {
+                    label: 'Subheader',
+                    show: template === 'article',
+                    style: {
+                        borderTopRightRadius: '10px',
+                    },
+                    input: H(TextInput, {
+                        value: subheader,
+                        placeholder: 'Insert text',
+                        oninput: (val: string) => {
+                            // Format val for uri compat
+                            val = val.replace(/’/g, "'");
+
+                            setLoadingState({
+                                subheader: val,
+                                overrideUrl: url,
+                            });
+                        },
+                    }),
+                }),
+                H(Field, {
+                    label: 'Subheader Color',
+                    show: template === 'article',
+                    style: {
+                        borderBottomRightRadius: '10px',
+                    },
+                    input: H(TextInput, {
+                        value: subheaderColor,
+                        type: 'color',
+                        placeholder: 'Insert text',
+                        oninput: (val: string) => {
+                            setLoadingState({
+                                subheaderColor: val,
+                                overrideUrl: url,
+                            });
+                        },
                     }),
                 }),
                 H(Field, {

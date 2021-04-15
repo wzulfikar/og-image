@@ -91,17 +91,10 @@ export function getHtml(parsedReq: ParsedRequest) {
             justify-content: space-between;
             margin-bottom: 4rem;
         }
-        .footer .images {
-            margin-top: auto;
-            margin-bottom: auto;
-            margin-left: auto;
-            margin-right: 4rem;
-        }
         .footer .images img {
             margin: 0px;
-            margin-left: 2rem;
-            height: 6rem;
-            width: 6rem;
+            margin-right: 4rem;
+            max-height: 6rem;
         }
         .author {
             display: flex;

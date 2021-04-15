@@ -331,15 +331,16 @@ img {
     border-color: black;
 }
 
-.field.field-custom .input-inner-wrapper.color-hint {
+.field .input-inner-wrapper.color-hint {
     width: 50%;
 }
 
-.field.field-custom span.color-hint {
+.field span.color-hint {
     width: 30%;
     padding: 10px;
     text-align: right;
     color: #818181;
+    font-size: 0.8rem;
 }
 
 div.what-is-this {

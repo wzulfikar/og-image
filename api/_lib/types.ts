@@ -7,9 +7,14 @@ export const NO_IMAGE = 'NO_IMAGE';
 
 // Optional props that activate based on template
 export interface TemplateProps {
+    // Template: devto
     authorImage?: string;
     authorName?: string;
     date?: string;
+
+    // Template: article
+    subheader?: string;
+    subheaderColor?: string;
 }
 
 export interface ParsedRequest extends TemplateProps {

@@ -28,6 +28,8 @@ export async function parseRequest(req: IncomingMessage) {
         customBackground,
         customForeground,
         customRadial,
+        subheader,
+        subheaderColor,
     } = query || {};
 
     if (Array.isArray(fontSize)) {
@@ -87,6 +89,10 @@ export async function parseRequest(req: IncomingMessage) {
         authorImage: authorImage as string,
         authorName: authorName as string,
         date: date as string,
+
+        // Template props: article
+        subheader: subheader as string,
+        subheaderColor: subheaderColor as string,
     };
 
     parsedRequest.images = await getDefaultImages(
