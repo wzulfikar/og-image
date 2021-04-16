@@ -50,7 +50,7 @@ export function getHtml(parsedReq: ParsedRequest) {
                     .join('')}
             </div>
             <div class="spacer">
-            <div class="${
+            <div style="line-height: 1" class="${
                 images.length ? 'heading' : 'heading no-image'
             }">${emojify(md ? marked(text) : sanitizeHtml(text))}
             </div>

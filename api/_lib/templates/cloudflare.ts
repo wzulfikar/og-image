@@ -91,7 +91,7 @@ export function getHtml(parsedReq: ParsedRequest) {
             text-align: left;
             padding-top: 4rem;
             color: ${titleColor};
-            line-height: 1.2em;
+            line-height: 1;
         }
         .title p {
             margin-top: 1rem;

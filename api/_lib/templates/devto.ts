@@ -81,6 +81,7 @@ export function getHtml(parsedReq: ParsedRequest) {
             padding-top: 4rem;
             padding-left: 4rem;
             padding-right: 4rem;
+            line-height: 1;
             color: ${customForeground};
         }
         .title p {
