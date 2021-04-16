@@ -90,7 +90,7 @@ export async function parseRequest(req: IncomingMessage) {
         authorName: authorName as string,
         date: date as string,
 
-        // Template props: article
+        // Template props: cloudflare
         subheader: subheader as string,
         subheaderColor: subheaderColor as string,
     };

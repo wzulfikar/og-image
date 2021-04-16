@@ -225,7 +225,7 @@ const Toast = ({ show, message }: ToastProps) => {
 
 const templateOptions: DropdownOption[] = [
     { text: 'Default', value: 'default' },
-    { text: 'Article', value: 'article' },
+    { text: 'Cloudflare', value: 'cloudflare' },
     { text: 'Dev.to', value: 'devto' },
 ];
 
@@ -340,7 +340,7 @@ interface AppState extends ParsedRequest {
     authorName?: string;
     date?: string;
 
-    // Template state: article
+    // Template state: cloudflare
     subheader?: string;
     subheaderColor?: string;
 }
@@ -723,7 +723,7 @@ const App = (_: any, state: AppState, setState: SetState) => {
                 }),
                 H(Field, {
                     label: 'Subheader',
-                    show: template === 'article',
+                    show: template === 'cloudflare',
                     style: {
                         borderTopRightRadius: '10px',
                     },
@@ -743,7 +743,7 @@ const App = (_: any, state: AppState, setState: SetState) => {
                 }),
                 H(Field, {
                     label: 'Subheader Color',
-                    show: template === 'article',
+                    show: template === 'cloudflare',
                     style: {
                         borderBottomRightRadius: '10px',
                     },
