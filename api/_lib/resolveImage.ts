@@ -23,6 +23,9 @@ const rules = [
     // Resolve webshot
     ['webshot/', resolveWebshot],
 
+    // Resolve hashvatar
+    ['hashvatar/', `https://hashvatar.vercel.app/${img}`],
+
     // Resolve providers using unavatar (https://unavatar.vercel.app).
     // Some providers no longer support public api. We only resolve
     // providers that still support it.
